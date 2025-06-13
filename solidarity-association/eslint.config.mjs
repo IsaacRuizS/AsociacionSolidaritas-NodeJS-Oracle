@@ -11,6 +11,13 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+
+  {
+    rules: {
+      // Establece indentación de 4 espacios
+      indent: ["error", 4],
+    },
+  },
 ];
 
 export default eslintConfig;
