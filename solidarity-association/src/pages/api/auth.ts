@@ -1,40 +1,25 @@
+import { serialize } from 'cookie';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import jwt from 'jsonwebtoken';
 
-const SECRET_KEY = process.env.JWT_SECRET || 'clave_super_secreta';
-
-type User = {
-    username: string;
-};
-
-type ResponseData =
-    | { user: { username: string; token: string } }
-    | { message: string };
-
-export default function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
-    
-    if (req.method !== 'POST') {
-        return res.status(405).json({ message: 'Método no permitido' });
-    }
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+    if (req.method !== 'POST') return res.status(405).end();
 
     const { username, password } = req.body;
 
-    const validUser = {
-        username: 'admin',
-        password: '1234',
-    };
+    // Simulación
+    if (username === 'admin' && password === '1234') {
+        const token = 'jwt_simulado_o_token'; // reemplazar con JWT real
 
-    if (username === validUser.username && password === validUser.password) {
-        const payload: User = { username };
-        const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '6h' });
+        res.setHeader('Set-Cookie', serialize('authToken', token, {
+            httpOnly: true,
+            path: '/',
+            maxAge: 60 * 60 * 24,
+            sameSite: 'lax',
+            secure: process.env.NODE_ENV === 'production',
+        }));
 
-        return res.status(200).json({
-        user: {
-            username,
-            token,
-        },
-        });
-    } else {
-        return res.status(401).json({ message: 'Credenciales inválidas' });
+        return res.status(200).json({ success: true });
     }
+
+    return res.status(401).json({ success: false, message: 'Credenciales inválidas' });
 }
