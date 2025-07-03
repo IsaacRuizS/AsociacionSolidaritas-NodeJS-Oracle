@@ -13,7 +13,7 @@ export default function EditCuotaModal({ show, currentCuota, onClose, onSave }: 
     const [cuota, setCuota] = useState(currentCuota);
 
     useEffect(() => {
-        setCuota(currentCuota); // actualizar cuando cambia el prop
+        setCuota(currentCuota); 
     }, [currentCuota]);
 
     if (!show) return null;

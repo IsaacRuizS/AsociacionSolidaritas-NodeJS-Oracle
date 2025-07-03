@@ -1,5 +1,5 @@
 import SavingView from './savingView';
 
-export default function LoginPage() {
+export default function SavingPage() {
     return <SavingView />;
 }
