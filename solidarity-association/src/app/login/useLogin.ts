@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { login } from '../services/authService';
 
 export function useLogin() {
-
     const [form, setForm] = useState({ username: '', password: '' });
     const [message, setMessage] = useState('');
     const router = useRouter();
@@ -14,22 +14,13 @@ export function useLogin() {
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
-
         e.preventDefault();
 
-        const res = await fetch('/api/auth', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(form),
-        });
+        const { ok, data } = await login(form);
 
-        const data = await res.json();
-
-        if (res.ok && data.success) {
-            
+        if (ok && data.success) {
             setMessage('Login exitoso');
             router.push('/');
-
         } else {
             setMessage(data.message || 'Error de autenticación');
         }

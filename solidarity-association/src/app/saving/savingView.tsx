@@ -10,8 +10,7 @@ import ConfirmDeleteModal from '@/components/confirmDeleteModal';
 
 export default function SavingView() {
 
-
-    const { savings, showCreateModal, setShowCreateModal, showEditModal, setShowEditModal, selectedCuota, handleEditClick, handleSaveCuota, showDeleteModal, setShowDeleteModal, handleDeleteClick, handleConfirmDelete } = useSaving();
+    const { savings, showCreateModal, setShowCreateModal, showEditModal, setShowEditModal, selectedCuota, handleEditClick, handleSaveCuota, handleCreateSaving, showDeleteModal, setShowDeleteModal, handleDeleteClick, handleConfirmDelete } = useSaving();
 
     return (
         <Sidebar>
@@ -66,7 +65,10 @@ export default function SavingView() {
                 </table>
             </div>
 
-            <CreateSavingModal show={showCreateModal} onClose={() => setShowCreateModal(false)} />
+            <CreateSavingModal 
+                show={showCreateModal} 
+                onClose={() => setShowCreateModal(false)} 
+                onCreate={handleCreateSaving} />
             <EditCuotaModal
                 show={showEditModal}
                 currentCuota={selectedCuota}
