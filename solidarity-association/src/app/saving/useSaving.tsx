@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { SavingModel } from '@/app/model/savingModel';
-import { createSaving, deleteSaving, updateSaving } from '../services/savingService';
+import { SavingModel } from '@/app/shared/model/savingModel';
+import { createSaving, deleteSaving, updateSaving } from '../shared/services/savingService';
 
 const mockData: SavingModel[] = [
     new SavingModel({ savingId: 1, name: 'Motorcycle Saving', currentBalance: 1000000, monthlyAmount: 20000, interestRate: 6, deadline: new Date('2026-01-12') }),

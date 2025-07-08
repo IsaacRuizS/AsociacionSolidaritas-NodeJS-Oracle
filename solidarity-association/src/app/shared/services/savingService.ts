@@ -1,5 +1,5 @@
 // services/savingService.ts
-import { SavingModel } from '@/app/model/savingModel';
+import { SavingModel } from '@/app/shared/model/savingModel';
 
 export async function createSaving(saving: SavingModel) {
     const response = await fetch('/api/savings/create', {

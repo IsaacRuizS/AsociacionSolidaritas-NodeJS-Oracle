@@ -1,12 +1,12 @@
 'use client';
 
 import { useSaving } from './useSaving';
-import Sidebar from '@/components/Sidebar';
+import Sidebar from '@/app/shared/components/Sidebar';
 import Icon from '@mdi/react';
 import { mdiCashPlus, mdiPlusCircleOutline, mdiTrashCan } from '@mdi/js';
 import CreateSavingModal from './modals/createSavingModal';
 import EditCuotaModal from './modals/editCuotaModal';
-import ConfirmDeleteModal from '@/components/confirmDeleteModal';
+import ConfirmDeleteModal from '@/app/shared/components/confirmDeleteModal';
 
 export default function SavingView() {
 

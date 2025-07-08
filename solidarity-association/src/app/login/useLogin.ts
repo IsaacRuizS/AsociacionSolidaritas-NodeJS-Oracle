@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { login } from '../services/authService';
+import { login } from '../shared/services/authService';
 
 export function useLogin() {
     const [form, setForm] = useState({ username: '', password: '' });
