@@ -8,6 +8,7 @@ export class BeneficiaryModel {
 
     beneficiaryId?: number;
     associateId?: number;
+    email?: string;
     firstName?: string;
     lastName1?: string;
     lastName2?: string;

@@ -41,7 +41,9 @@ export default function Sidebar({ children }: { children: ReactNode }) {
                     </nav>
                 </div>
                 <div className="px-4 py-4 border-t text-sm text-gray-600">
-                    <button className="hover:underline text-red-600">Cerrar sesión</button>
+                    <Link href="/login" className="hover:underline text-red-600">
+                        <button className="hover:underline text-red-600" >Cerrar sesión</button>
+                    </Link>
                 </div>
             </aside>
 
