@@ -1,5 +1,5 @@
-import CreditView from './creditView';
+import AssociateView from './associateView';
 
-export default function CreditPage() {
-    return <CreditView />;
+export default function AssociatePage() {
+    return <AssociateView />;
 }
