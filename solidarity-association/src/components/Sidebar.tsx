@@ -8,7 +8,7 @@ import {mdiPiggyBank,mdiBank,mdiAccountGroup,mdiAccountPlus} from '@mdi/js';
 
 const navItems = [
     { label: 'Ahorros', href: '/saving', icon: mdiPiggyBank },
-    { label: 'Créditos', href: '/loan', icon: mdiBank },
+    { label: 'Créditos', href: '/credit', icon: mdiBank },
     { label: 'Usuarios', href: '/user', icon: mdiAccountGroup },
     { label: 'Beneficiarios', href: '/beneficiary', icon: mdiAccountPlus },
 ];

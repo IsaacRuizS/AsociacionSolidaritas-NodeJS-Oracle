@@ -13,7 +13,7 @@ export class CreditModel {
     }
 
     creditId?: number;
-    memberId?: number;
+    associateId?: number;
     creditStatusId?: number;
     name?: string;
     requestedAmount?: number;
