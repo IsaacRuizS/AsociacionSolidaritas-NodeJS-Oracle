@@ -91,7 +91,6 @@ BEGIN
         P_NATIONAL_ID, P_EMAIL, P_PHONE, P_GROSS_SALARY
     );
 END;
-/
 
 
 -- SP_UPDATE_ASSOCIATE
@@ -117,7 +116,6 @@ BEGIN
         GROSS_SALARY = P_GROSS_SALARY
     WHERE ASSOCIATE_ID = P_ID;
 END;
-/
 
 
 -- SP_DELETE_ASSOCIATE
@@ -127,7 +125,6 @@ CREATE OR REPLACE PROCEDURE SP_DELETE_ASSOCIATE (
 BEGIN
     DELETE FROM ASSOCIATE WHERE ASSOCIATE_ID = P_ID;
 END;
-/
 
 --------------------------------------------------------------------------------
 
@@ -151,7 +148,6 @@ BEGIN
         P_RELATIONSHIP, P_PERCENTAGE, P_EMAIL, P_PHONE
     );
 END;
-/
 
 
 -- SP_UPDATE_BENEFICIARY
@@ -179,7 +175,6 @@ BEGIN
         PHONE         = P_PHONE
     WHERE BENEFICIARY_ID = P_BENEFICIARY_ID;
 END;
-/
 
 
 -- SP_DELETE_BENEFICIARY
@@ -189,7 +184,6 @@ CREATE OR REPLACE PROCEDURE SP_DELETE_BENEFICIARY (
 BEGIN
     DELETE FROM BENEFICIARY WHERE BENEFICIARY_ID = P_ID;
 END;
-/
 
 --------------------------------------------------------------------------------
 
@@ -214,7 +208,6 @@ BEGIN
         P_INTEREST_RATE, P_APPROVAL_DATE
     );
 END;
-/
 
 
 -- SP_UPDATE_CREDIT
@@ -240,7 +233,6 @@ BEGIN
         APPROVAL_DATE    = P_APPROVAL_DATE
     WHERE CREDIT_ID = P_CREDIT_ID;
 END;
-/
 
 
 -- SP_DELETE_CREDIT
@@ -250,7 +242,6 @@ CREATE OR REPLACE PROCEDURE SP_DELETE_CREDIT (
 BEGIN
     DELETE FROM CREDIT WHERE CREDIT_ID = P_ID;
 END;
-/
 
 --------------------------------------------------------------------------------
 
@@ -272,7 +263,6 @@ BEGIN
         P_MONTHLY_AMOUNT, P_INTEREST_RATE, P_DEADLINE
     );
 END;
-/
 
 -- SP_UPDATE_SAVING
 CREATE OR REPLACE PROCEDURE SP_UPDATE_SAVING (
@@ -295,7 +285,6 @@ BEGIN
         DEADLINE         = P_DEADLINE
     WHERE SAVING_ID = P_SAVING_ID;
 END;
-/
 
 
 -- SP_DELETE_SAVING
@@ -305,15 +294,14 @@ CREATE OR REPLACE PROCEDURE SP_DELETE_SAVING (
 BEGIN
     DELETE FROM SAVING WHERE SAVING_ID = P_ID;
 END;
-/
 
 --------------------------------------------------------------------------------
 -- Pruebas --
 --------------------------------------------------------------------------------
 
-EXEC SP_CREATE_ASSOCIATE('Jesus', 'Ramirez', 'Castro', 'Rusia', 'Ruso.ramirez@example.com', '4561-1234', '5550');
+EXEC SP_CREATE_ASSOCIATE('Jesus', 'Crack', 'asas', '20', 'Ruso.ramirez@example.com', '4561-1234', '5550');
 
-EXEC SP_UPDATE_ASSOCIATE('2', 'Dante', 'Ramirez', 'González', 'Rusia', 'Dante.ramirez@example.com', '1234-1234', '20000');
+EXEC SP_UPDATE_ASSOCIATE('2', 'Dante', 'TiesS', 'XD', '50', 'DanteGod.ramirez@example.com', '1234-1234', '20000');
 
 EXEC SP_DELETE_ASSOCIATE(5);
 
@@ -323,36 +311,32 @@ EXEC SP_UPDATE_BENEFICIARY('8', '3', 'Maria', 'González', 'Castro', 'Hija', '60
 
 EXEC SP_DELETE_BENEFICIARY(6);
 
+EXEC SP_CREATE_CREDIT(3, 'Prueba', 2, 2, 2, 2, SYSDATE);
+
+EXEC SP_UPDATE_CREDIT(4, 3, 'Prueba', 3, 3, 3,3, SYSDATE);
+
+EXEC SP_DELETE_CREDIT(3);
+
+EXEC SP_CREATE_SAVING( 3, 'Ahorro Programado', 500000, 25000, 5, SYSDATE);
+
+EXEC SP_UPDATE_SAVING(1, 3, 'Ahorro Programado', 40000, 15000, 10, SYSDATE);
+
+EXEC SP_DELETE_SAVING(2);
 
 
 SELECT * FROM VW_ASSOCIATE;
 
-
 SELECT * FROM VW_ASSOCIATE
-WHERE NATIONAL_ID = 'Rusia';
+WHERE NATIONAL_ID = '50';
 
 SELECT * FROM VW_BENEFICIARY;
 
 SELECT * FROM VW_ASSOCIATE_BENEFICIARY;
 
 
-EXEC SP_CREATE_CREDIT(
-    3,
-    'Préstamo de vivienda',
-    20000000,
-    20000000,
-    300000,
-    7,
-    TO_DATE('2025-07-10', 'YYYY-MM-DD')
-);
 
-EXEC SP_CREATE_SAVING(
-    3,                               -- P_ASSOCIATE_ID
-    'Ahorro Programado',             -- P_NAME
-    500000,                          -- P_CURRENT_BALANCE
-    25000,                           -- P_MONTHLY_AMOUNT
-    4.5,                             -- P_INTEREST_RATE
-    TO_DATE('2025-12-31', 'YYYY-MM-DD')  -- P_DEADLINE
-);
+
+
+
 
 
