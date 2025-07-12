@@ -2,6 +2,12 @@ CREATE USER SolidarityAssociation IDENTIFIED BY AsoSolidarista;
 GRANT CONNECT, RESOURCE TO SolidarityAssociation;
 ALTER USER SolidarityAssociation DEFAULT TABLESPACE USERS;
 
+-- Permitir crear vistas
+GRANT CREATE VIEW TO SolidarityAssociation;
+
+-- Permitir crear procedimientos almacenados
+GRANT CREATE PROCEDURE TO SolidarityAssociation;
+
 ------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE LABOR_CONDITION (
