@@ -48,7 +48,7 @@ export default function SavingView() {
                                 <td className="px-4 py-3 text-center">₡{a.currentBalance?.toLocaleString('es-CR')}</td>
                                 <td className="px-4 py-3 text-center">₡{a.monthlyAmount?.toLocaleString('es-CR')}</td>
                                 <td className="px-4 py-3 text-center">{a.interestRate?.toString()}</td>
-                                <td className="px-4 py-3 text-center">{a.deadline?.toLocaleDateString('es-CR')}</td>
+                                <td className="px-4 py-3 text-center">{a.deadline?.toString().slice(0, 10)}</td>
                                 <td className="px-4 py-3 text-center">
                                     <div className="flex justify-center items-center" onClick={() => handleEditClick(a.savingId!, a.monthlyAmount!)}>
                                         <Icon path={mdiCashPlus} size={1} />

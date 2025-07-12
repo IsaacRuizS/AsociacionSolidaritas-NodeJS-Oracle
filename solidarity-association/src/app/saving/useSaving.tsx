@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SavingModel } from '@/app/shared/model/savingModel';
-import { createSaving, deleteSaving, updateSaving } from '../shared/services/savingService';
+import { getSavings, createSaving, deleteSaving, updateSaving } from '../shared/services/savingService';
 
 const mockData: SavingModel[] = [
     new SavingModel({ savingId: 1, name: 'Motorcycle Saving', currentBalance: 1000000, monthlyAmount: 20000, interestRate: 6, deadline: new Date('2026-01-12') }),
@@ -12,7 +12,13 @@ const mockData: SavingModel[] = [
 ];
 
 export function useSaving() {
-    const [savings, setSavings] = useState<SavingModel[]>(mockData);
+    const [savings, setSavings] = useState<SavingModel[]>([]);
+
+    useEffect(() => {
+        getSavings().then((data) => setSavings(data));
+    }, []);
+
+    console.log(savings)
 
     // Modals
     const [showCreateModal, setShowCreateModal] = useState(false);

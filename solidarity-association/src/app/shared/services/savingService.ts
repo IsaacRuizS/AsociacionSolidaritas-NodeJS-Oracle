@@ -1,7 +1,7 @@
 import { SavingModel } from '@/app/shared/model/savingModel';
 
 export async function getSavings(): Promise<SavingModel[]> {
-    const response = await fetch('/api/savings', {
+    const response = await fetch('/api/saving', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     });

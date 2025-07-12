@@ -90,6 +90,7 @@ BEGIN
         P_FIRST_NAME, P_LAST_NAME_1, P_LAST_NAME_2,
         P_NATIONAL_ID, P_EMAIL, P_PHONE, P_GROSS_SALARY
     );
+    COMMIT;
 END;
 
 
@@ -115,6 +116,7 @@ BEGIN
         PHONE        = P_PHONE,
         GROSS_SALARY = P_GROSS_SALARY
     WHERE ASSOCIATE_ID = P_ID;
+    COMMIT;
 END;
 
 
@@ -124,6 +126,7 @@ CREATE OR REPLACE PROCEDURE SP_DELETE_ASSOCIATE (
 ) AS
 BEGIN
     DELETE FROM ASSOCIATE WHERE ASSOCIATE_ID = P_ID;
+    COMMIT;
 END;
 
 --------------------------------------------------------------------------------
@@ -147,6 +150,7 @@ BEGIN
         P_ASSOCIATE_ID, P_FIRST_NAME, P_LAST_NAME_1, P_LAST_NAME_2,
         P_RELATIONSHIP, P_PERCENTAGE, P_EMAIL, P_PHONE
     );
+    COMMIT;
 END;
 
 
@@ -174,6 +178,7 @@ BEGIN
         EMAIL         = P_EMAIL,
         PHONE         = P_PHONE
     WHERE BENEFICIARY_ID = P_BENEFICIARY_ID;
+    COMMIT;
 END;
 
 
@@ -183,6 +188,7 @@ CREATE OR REPLACE PROCEDURE SP_DELETE_BENEFICIARY (
 ) AS
 BEGIN
     DELETE FROM BENEFICIARY WHERE BENEFICIARY_ID = P_ID;
+    COMMIT;
 END;
 
 --------------------------------------------------------------------------------
@@ -207,6 +213,7 @@ BEGIN
         P_CURRENT_BALANCE, P_MONTHLY_PAYMENT,
         P_INTEREST_RATE, P_APPROVAL_DATE
     );
+    COMMIT;
 END;
 
 
@@ -232,6 +239,7 @@ BEGIN
         INTEREST_RATE    = P_INTEREST_RATE,
         APPROVAL_DATE    = P_APPROVAL_DATE
     WHERE CREDIT_ID = P_CREDIT_ID;
+    COMMIT;
 END;
 
 
@@ -241,6 +249,7 @@ CREATE OR REPLACE PROCEDURE SP_DELETE_CREDIT (
 ) AS
 BEGIN
     DELETE FROM CREDIT WHERE CREDIT_ID = P_ID;
+    COMMIT;
 END;
 
 --------------------------------------------------------------------------------
@@ -262,6 +271,7 @@ BEGIN
         P_ASSOCIATE_ID, P_NAME, P_CURRENT_BALANCE,
         P_MONTHLY_AMOUNT, P_INTEREST_RATE, P_DEADLINE
     );
+    COMMIT;
 END;
 
 -- SP_UPDATE_SAVING
@@ -284,6 +294,7 @@ BEGIN
         INTEREST_RATE    = P_INTEREST_RATE,
         DEADLINE         = P_DEADLINE
     WHERE SAVING_ID = P_SAVING_ID;
+    COMMIT;
 END;
 
 
@@ -293,6 +304,7 @@ CREATE OR REPLACE PROCEDURE SP_DELETE_SAVING (
 ) AS
 BEGIN
     DELETE FROM SAVING WHERE SAVING_ID = P_ID;
+    COMMIT;
 END;
 
 --------------------------------------------------------------------------------

@@ -1,8 +1,16 @@
 export class SavingModel {
 
-    constructor(init?: Partial<Pick<SavingModel, keyof SavingModel>>) {
+    constructor(init?: any) {
         if (init) {
-            Object.assign(this, init);
+            this.savingId = init.SAVING_ID;
+            this.associateId = init.ASSOCIATE_ID;
+            this.savingTypeId = init.SAVING_TYPE_ID;
+            this.name = init.NAME;
+            this.currentBalance = init.CURRENT_BALANCE;
+            this.monthlyAmount = init.MONTHLY_AMOUNT;
+            this.generatedInterest = init.GENERATED_INTEREST;
+            this.interestRate = init.INTEREST_RATE;
+            this.deadline = init.DEADLINE;
         }
     }
 
@@ -19,7 +27,7 @@ export class SavingModel {
 
 export class SavingTypeModel {
 
-    constructor(init?: Partial<Pick<SavingTypeModel, keyof SavingTypeModel>>) {
+    constructor(init?: any) {
         if (init) {
             Object.assign(this, init);
         }
