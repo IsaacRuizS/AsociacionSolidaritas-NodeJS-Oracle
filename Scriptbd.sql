@@ -15,6 +15,7 @@ GRANT CREATE VIEW TO SolidarityAssociation;
 
 -- Permitir crear procedimientos almacenados
 GRANT CREATE PROCEDURE TO SolidarityAssociation;
+ALTER USER SolidarityAssociation QUOTA UNLIMITED ON USERS;
 
 ------------------------------------------------------------------------------------------------------------------
 
