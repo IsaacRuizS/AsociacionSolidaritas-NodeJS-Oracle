@@ -1,0 +1,43 @@
+import { CreditStatusModel } from '@/app/shared/model/creditModel';
+
+export async function getCreditStatuses(): Promise<CreditStatusModel[]> {
+    const response = await fetch('/api/credit-status', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (!response.ok) throw new Error('Error al obtener los estados de crédito');
+    const data = await response.json();
+    return data.map((item: any) => new CreditStatusModel(item));
+}
+
+export async function createCreditStatus(status: CreditStatusModel) {
+    const response = await fetch('/api/credit-status/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(status),
+    });
+
+    if (!response.ok) throw new Error('Error al crear el estado de crédito');
+    return await response.json();
+}
+
+export async function updateCreditStatus(status: CreditStatusModel) {
+    const response = await fetch(`/api/credit-status/${status.statusId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(status),
+    });
+
+    if (!response.ok) throw new Error('Error al actualizar el estado de crédito');
+    return await response.json();
+}
+
+export async function deleteCreditStatus(statusId: number) {
+    const response = await fetch(`/api/credit-status/${statusId}`, {
+        method: 'DELETE',
+    });
+
+    if (!response.ok) throw new Error('Error al eliminar el estado de crédito');
+    return await response.json();
+}

@@ -25,9 +25,9 @@ export class CreditModel {
     approvalDate?: Date;
 }
 
-export class CreditStatus {
+export class CreditStatusModel {
 
-    constructor(init?: Partial<Pick<CreditStatus, keyof CreditStatus>>) {
+    constructor(init?: Partial<Pick<CreditStatusModel, keyof CreditStatusModel>>) {
         if (init) {
             Object.assign(this, init);
         }
@@ -37,9 +37,9 @@ export class CreditStatus {
     description?: string;
 }
 
-export class CreditContribution {
+export class CreditContributionModel {
 
-    constructor(init?: Partial<Pick<CreditContribution, keyof CreditContribution>>) {
+    constructor(init?: Partial<Pick<CreditContributionModel, keyof CreditContributionModel>>) {
         if (init) {
             if (typeof init.date === 'string') {
                 init.date = new Date(init.date);
