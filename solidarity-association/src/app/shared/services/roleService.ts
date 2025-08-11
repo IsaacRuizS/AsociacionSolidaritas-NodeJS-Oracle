@@ -12,7 +12,7 @@ export async function getRoles(): Promise<RoleModel[]> {
 }
 
 export async function createRole(role: RoleModel) {
-    const response = await fetch('/api/roles/create', {
+    const response = await fetch('/api/role', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(role),
@@ -23,8 +23,8 @@ export async function createRole(role: RoleModel) {
 }
 
 export async function updateRole(role: RoleModel) {
-    const response = await fetch(`/api/roles/${role.roleId}`, {
-        method: 'PUT',
+    const response = await fetch(`/api/role`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(role),
     });
@@ -34,7 +34,7 @@ export async function updateRole(role: RoleModel) {
 }
 
 export async function deleteRole(roleId: number) {
-    const response = await fetch(`/api/roles/${roleId}`, {
+    const response = await fetch(`/api/role/${roleId}`, {
         method: 'DELETE',
     });
 

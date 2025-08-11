@@ -12,7 +12,7 @@ export async function getSavingContributions(): Promise<SavingContributionModel[
 }
 
 export async function createSavingContribution(contribution: SavingContributionModel) {
-    const response = await fetch('/api/saving-contributions/create', {
+    const response = await fetch('/api/saving-contribution', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(contribution),
@@ -23,8 +23,8 @@ export async function createSavingContribution(contribution: SavingContributionM
 }
 
 export async function updateSavingContribution(contribution: SavingContributionModel) {
-    const response = await fetch(`/api/saving-contributions/${contribution.contributionId}`, {
-        method: 'PUT',
+    const response = await fetch(`/api/saving-contribution`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(contribution),
     });
@@ -34,7 +34,7 @@ export async function updateSavingContribution(contribution: SavingContributionM
 }
 
 export async function deleteSavingContribution(contributionId: number) {
-    const response = await fetch(`/api/saving-contributions/${contributionId}`, {
+    const response = await fetch(`/api/saving-contribution/${contributionId}`, {
         method: 'DELETE',
     });
 

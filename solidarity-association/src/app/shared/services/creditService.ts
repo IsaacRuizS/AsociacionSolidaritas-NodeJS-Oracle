@@ -12,7 +12,7 @@ export async function getCredits(): Promise<CreditModel[]> {
 }
 
 export async function createCredit(credit: CreditModel) {
-    const response = await fetch('/api/credits/create', {
+    const response = await fetch('/api/credit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credit),
@@ -23,8 +23,8 @@ export async function createCredit(credit: CreditModel) {
 }
 
 export async function updateCredit(credit: CreditModel) {
-    const response = await fetch(`/api/credits/${credit.creditId}`, {
-        method: 'PUT',
+    const response = await fetch(`/api/credit`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credit),
     });
@@ -34,7 +34,7 @@ export async function updateCredit(credit: CreditModel) {
 }
 
 export async function deleteCredit(creditId: number) {
-    const response = await fetch(`/api/credits/${creditId}`, {
+    const response = await fetch(`/api/credit/${creditId}`, {
         method: 'DELETE',
     });
 

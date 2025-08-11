@@ -1,7 +1,7 @@
 import { BeneficiaryModel } from '@/app/shared/model/beneficiaryModel';
 
 export async function getBeneficiaries(): Promise<BeneficiaryModel[]> {
-    const response = await fetch('/api/beneficiaries', {
+    const response = await fetch('/api/beneficiary', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     });
@@ -12,7 +12,7 @@ export async function getBeneficiaries(): Promise<BeneficiaryModel[]> {
 }
 
 export async function createBeneficiary(beneficiary: BeneficiaryModel) {
-    const response = await fetch('/api/beneficiaries/create', {
+    const response = await fetch('/api/beneficiary', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(beneficiary),
@@ -23,8 +23,8 @@ export async function createBeneficiary(beneficiary: BeneficiaryModel) {
 }
 
 export async function updateBeneficiary(beneficiary: BeneficiaryModel) {
-    const response = await fetch(`/api/beneficiaries/${beneficiary.beneficiaryId}`, {
-        method: 'PUT',
+    const response = await fetch(`/api/beneficiary`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(beneficiary),
     });
@@ -34,7 +34,7 @@ export async function updateBeneficiary(beneficiary: BeneficiaryModel) {
 }
 
 export async function deleteBeneficiary(beneficiaryId: number) {
-    const response = await fetch(`/api/beneficiaries/${beneficiaryId}`, {
+    const response = await fetch(`/api/beneficiary/${beneficiaryId}`, {
         method: 'DELETE',
     });
 

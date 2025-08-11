@@ -29,8 +29,7 @@ async function getSaving(req: NextApiRequest, res: NextApiResponse) {
 
 async function postSaving(req: NextApiRequest, res: NextApiResponse) {
   const nuevoUsuario = req.body;
-  const result = await runQuery('BEGIN PKG_SAVING.AgregarAhorro(:P_ASSOCIATE_ID, :P_NAME, :P_CURRENT_BALANCE, :P_MONTHLY_AMOUNT, :P_INTEREST_RATE, :P_DEADLINE); END;', {
-    P_ASSOCIATE_ID: { val: nuevoUsuario.associateId, type: oracledb.NUMBER },
+  const result = await runQuery('BEGIN SP_CREATE_SAVING(:P_NAME, :P_CURRENT_BALANCE, :P_MONTHLY_AMOUNT, :P_INTEREST_RATE, :P_DEADLINE); END;', {
     P_NAME: { val: nuevoUsuario.name, type: oracledb.STRING },
     P_CURRENT_BALANCE: { val: nuevoUsuario.currentBalance, type: oracledb.NUMBER },
     P_MONTHLY_AMOUNT: { val: nuevoUsuario.monthlyAmount, type: oracledb.NUMBER },
@@ -42,7 +41,7 @@ async function postSaving(req: NextApiRequest, res: NextApiResponse) {
 
 async function patchSaving(req: NextApiRequest, res: NextApiResponse) {
   const usuarioActualizar = req.body;
-  const result = await runQuery('BEGIN PKG_SAVING.ActualizarAhorro(:P_SAVING_ID, :P_ASSOCIATE_ID, :P_NAME, :P_CURRENT_BALANCE, :P_MONTHLY_AMOUNT, :P_INTEREST_RATE, :P_DEADLINE); END;', {
+  const result = await runQuery('BEGIN SP_UPDATE_SAVING(:P_SAVING_ID, :P_ASSOCIATE_ID, :P_NAME, :P_CURRENT_BALANCE, :P_MONTHLY_AMOUNT, :P_INTEREST_RATE, :P_DEADLINE); END;', {
     P_SAVING_ID: { val: usuarioActualizar.savingId, type: oracledb.NUMBER },
     P_ASSOCIATE_ID: { val: usuarioActualizar.associateId, type: oracledb.NUMBER },
     P_NAME: { val: usuarioActualizar.name, type: oracledb.STRING },
@@ -56,7 +55,7 @@ async function patchSaving(req: NextApiRequest, res: NextApiResponse) {
 
 async function deleteSaving(req: NextApiRequest, res: NextApiResponse) {
   const savingId = req.query.savingId;
-  const result = await runQuery('BEGIN PKG_SAVING.EliminarAhorro(:P_SAVING_ID); END;', {
+  const result = await runQuery('BEGIN SP_DELETE_SAVING(:P_SAVING_ID); END;', {
     P_SAVING_ID: { val: savingId, type: oracledb.NUMBER },
   });
   return res.status(200).json({ message: 'Ahorro eliminado' });

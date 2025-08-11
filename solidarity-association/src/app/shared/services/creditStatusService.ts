@@ -12,7 +12,7 @@ export async function getCreditStatuses(): Promise<CreditStatusModel[]> {
 }
 
 export async function createCreditStatus(status: CreditStatusModel) {
-    const response = await fetch('/api/credit-status/create', {
+    const response = await fetch('/api/credit-status', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(status),
@@ -23,8 +23,8 @@ export async function createCreditStatus(status: CreditStatusModel) {
 }
 
 export async function updateCreditStatus(status: CreditStatusModel) {
-    const response = await fetch(`/api/credit-status/${status.statusId}`, {
-        method: 'PUT',
+    const response = await fetch(`/api/credit-status`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(status),
     });

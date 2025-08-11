@@ -12,7 +12,7 @@ export async function getAssociates(): Promise<AssociateModel[]> {
 }
 
 export async function createAssociate(associate: AssociateModel) {
-    const response = await fetch('/api/associates/create', {
+    const response = await fetch('/api/associate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(associate),
@@ -23,8 +23,8 @@ export async function createAssociate(associate: AssociateModel) {
 }
 
 export async function updateAssociate(associate: AssociateModel) {
-    const response = await fetch(`/api/associates/${associate.associateId}`, {
-        method: 'PUT',
+    const response = await fetch(`/api/associate`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(associate),
     });
@@ -34,7 +34,7 @@ export async function updateAssociate(associate: AssociateModel) {
 }
 
 export async function deleteAssociate(associateId: number) {
-    const response = await fetch(`/api/associates/${associateId}`, {
+    const response = await fetch(`/api/associate/${associateId}`, {
         method: 'DELETE',
     });
 

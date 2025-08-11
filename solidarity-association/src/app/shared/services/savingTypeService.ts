@@ -12,7 +12,7 @@ export async function getSavingTypes(): Promise<SavingTypeModel[]> {
 }
 
 export async function createSavingType(type: SavingTypeModel) {
-    const response = await fetch('/api/savingTypes/create', {
+    const response = await fetch('/api/saving-type', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(type),
@@ -23,8 +23,8 @@ export async function createSavingType(type: SavingTypeModel) {
 }
 
 export async function updateSavingType(type: SavingTypeModel) {
-    const response = await fetch(`/api/savingTypes/${type.savingTypeId}`, {
-        method: 'PUT',
+    const response = await fetch(`/api/saving-type`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(type),
     });
@@ -34,7 +34,7 @@ export async function updateSavingType(type: SavingTypeModel) {
 }
 
 export async function deleteSavingType(typeId: number) {
-    const response = await fetch(`/api/savingTypes/${typeId}`, {
+    const response = await fetch(`/api/saving-type/${typeId}`, {
         method: 'DELETE',
     });
 
