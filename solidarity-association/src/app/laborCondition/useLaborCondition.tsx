@@ -1,34 +1,47 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LaborConditionModel } from '@/app/shared/model/laborConditionModel';
-import { createLaborCondition, updateLaborCondition, deleteLaborCondition } from '@/app/shared/services/laborConditionService';
-
-const mockData: LaborConditionModel[] = [
-    new LaborConditionModel({ conditionId: 1, description: 'Tiempo completo' }),
-    new LaborConditionModel({ conditionId: 2, description: 'Medio tiempo' }),
-    new LaborConditionModel({ conditionId: 3, description: 'Contrato' }),
-];
+import {createLaborCondition,updateLaborCondition,deleteLaborCondition,getLaborConditions} from '@/app/shared/services/laborConditionService';
 
 export function useLaborCondition() {
-    const [conditions, setConditions] = useState<LaborConditionModel[]>(mockData);
+
+    const [conditions, setConditions] = useState<LaborConditionModel[]>([]);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [conditionToAction, setConditionToAction] = useState<number | null>(null);
-    const [selectedEdit, setSelectedEdit] = useState<{ description: string }>({ description: '' });
+    const [selectedEdit, setSelectedEdit] = useState<LaborConditionModel | null>(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-    const handleEditClick = (conditionId: number, description: string) => {
-        setSelectedEdit({ description });
-        setConditionToAction(conditionId);
-        setShowEditModal(true);
+    // Cargar condiciones laborales desde API
+    useEffect(() => {
+        const fetchLaborConditions = async () => {
+            try {
+                const data = await getLaborConditions();
+                setConditions(data);
+            } catch (err: any) {
+                console.error(err);
+            }
+        };
+        fetchLaborConditions();
+    }, []);
+
+    // Abrir modal de edición
+    const handleEditClick = (conditionId: number) => {
+        const condition = conditions.find((c) => c.conditionId === conditionId);
+        if (condition) {
+            setSelectedEdit(condition);
+            setShowEditModal(true);
+        }
     };
 
+    // Abrir modal de eliminación
     const handleDeleteClick = (id: number) => {
         setConditionToAction(id);
         setShowDeleteModal(true);
     };
 
+    // Confirmar eliminación
     const handleConfirmDelete = async () => {
         if (conditionToAction !== null) {
             await deleteLaborCondition(conditionToAction);
@@ -37,25 +50,22 @@ export function useLaborCondition() {
         setShowDeleteModal(false);
     };
 
-    const handleSaveEdit = async (description: string) => {
+    // Guardar cambios de edición
+    const handleSaveEdit = async (updatedCondition: LaborConditionModel) => {
+        await updateLaborCondition(updatedCondition);
         setShowEditModal(false);
-        if (conditionToAction !== null) {
-            const condition = conditions.find((c) => c.conditionId === conditionToAction);
-            if (condition) {
-                const updated = new LaborConditionModel({ ...condition, description });
-                await updateLaborCondition(updated);
-                setConditions((prev) =>
-                    prev.map((c) => c.conditionId === updated.conditionId ? updated : c)
-                );
-            }
-        }
+
+        const newData = await getLaborConditions();
+        setConditions(newData);
     };
 
-    const handleCreateCondition = async (newData: { description: string }) => {
-        const newCondition = new LaborConditionModel({ description: newData.description });
-        const saved = await createLaborCondition(newCondition);
-        setConditions((prev) => [...prev, new LaborConditionModel(saved)]);
+    // Crear nueva condición laboral
+    const handleCreateCondition = async (newCondition: LaborConditionModel) => {
+        await createLaborCondition(newCondition);
         setShowCreateModal(false);
+
+        const newData = await getLaborConditions();
+        setConditions(newData);
     };
 
     return {

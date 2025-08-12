@@ -27,6 +27,7 @@ export default function LaborConditionView() {
 
     return (
         <Sidebar>
+            {/* Título y botón crear */}
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold text-[#1F2937]">Condiciones Laborales</h1>
                 <button
@@ -37,6 +38,7 @@ export default function LaborConditionView() {
                 </button>
             </div>
 
+            {/* Tabla */}
             <div className="overflow-x-auto bg-white shadow rounded-lg">
                 <table className="min-w-full table-auto text-sm">
                     <thead className="bg-gray-100 text-gray-700 font-medium text-left">
@@ -47,18 +49,20 @@ export default function LaborConditionView() {
                         </tr>
                     </thead>
                     <tbody>
-                        {conditions.map((c) => (
-                            <tr key={c.conditionId} className="hover:bg-gray-50 border-t border-gray-200">
-                                <td className="px-4 py-3 text-center">{c.conditionId?.toString().padStart(2, '0')}</td>
+                        {conditions.map((c, index) => (
+                            <tr key={c.conditionId ?? index} className="hover:bg-gray-50 border-t border-gray-200">
+                                <td className="px-4 py-3 text-center">
+                                    {c.conditionId?.toString().padStart(2, '0')}
+                                </td>
                                 <td className="px-4 py-3 text-center font-medium">{c.description}</td>
                                 <td className="px-4 py-3 text-center">
                                     <div className="flex justify-center items-center gap-2">
-                                        <div onClick={() => handleEditClick(c.conditionId!, c.description!)}>
+                                        <button type="button" onClick={() => handleEditClick(c.conditionId!)}>
                                             <Icon path={mdiPencil} size={1} />
-                                        </div>
-                                        <div onClick={() => handleDeleteClick(c.conditionId!)}>
+                                        </button>
+                                        <button type="button" onClick={() => handleDeleteClick(c.conditionId!)}>
                                             <Icon path={mdiTrashCan} size={1} />
-                                        </div>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -67,17 +71,20 @@ export default function LaborConditionView() {
                 </table>
             </div>
 
+            {/* Modales */}
             <CreateLaborConditionModal
                 show={showCreateModal}
                 onClose={() => setShowCreateModal(false)}
                 onCreate={handleCreateCondition}
             />
+
             <EditLaborConditionModal
                 show={showEditModal}
                 currentEdit={selectedEdit}
                 onClose={() => setShowEditModal(false)}
                 onSave={handleSaveEdit}
             />
+
             <ConfirmDeleteModal
                 show={showDeleteModal}
                 onClose={() => setShowDeleteModal(false)}

@@ -1,7 +1,7 @@
 import { LaborConditionModel } from '@/app/shared/model/laborConditionModel';
 
 export async function getLaborConditions(): Promise<LaborConditionModel[]> {
-    const response = await fetch('/api/labor-conditions', {
+    const response = await fetch('/api/laborCondition', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     });
@@ -12,7 +12,7 @@ export async function getLaborConditions(): Promise<LaborConditionModel[]> {
 }
 
 export async function createLaborCondition(condition: LaborConditionModel) {
-    const response = await fetch('/api/labor-condition', {
+    const response = await fetch('/api/laborCondition', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(condition),
@@ -23,7 +23,7 @@ export async function createLaborCondition(condition: LaborConditionModel) {
 }
 
 export async function updateLaborCondition(condition: LaborConditionModel) {
-    const response = await fetch(`/api/labor-condition`, {
+    const response = await fetch(`/api/laborCondition`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(condition),
@@ -34,7 +34,7 @@ export async function updateLaborCondition(condition: LaborConditionModel) {
 }
 
 export async function deleteLaborCondition(conditionId: number) {
-    const response = await fetch(`/api/labor-condition/${conditionId}`, {
+    const response = await fetch(`/api/laborCondition/${conditionId}`, {
         method: 'DELETE',
     });
 

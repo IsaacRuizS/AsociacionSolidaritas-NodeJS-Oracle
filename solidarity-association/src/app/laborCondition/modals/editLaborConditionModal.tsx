@@ -1,26 +1,40 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { LaborConditionModel } from '@/app/shared/model/laborConditionModel';
 
 type Props = {
     show: boolean;
-    currentEdit: { description: string };
+    currentEdit: LaborConditionModel | null;
     onClose: () => void;
-    onSave: (description: string) => void;
+    onSave: (updated: LaborConditionModel) => void;
 };
 
 export default function EditLaborConditionModal({ show, currentEdit, onClose, onSave }: Props) {
-    const [description, setDescription] = useState(currentEdit.description);
+    const [formData, setFormData] = useState<LaborConditionModel>(new LaborConditionModel());
 
+    // Precargar la data en el formulario cuando cambie currentEdit
     useEffect(() => {
-        setDescription(currentEdit.description);
+        if (currentEdit) {
+            setFormData(currentEdit);
+        }
     }, [currentEdit]);
 
-    if (!show) return null;
+    if (!show || !currentEdit) return null;
 
+    // Manejar cambios en los inputs
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    // Guardar cambios
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSave(description);
+        onSave(formData);
         onClose();
     };
 
@@ -32,9 +46,10 @@ export default function EditLaborConditionModal({ show, currentEdit, onClose, on
                     <div>
                         <label className="text-sm text-gray-700 mb-1 block">Descripción</label>
                         <input
+                            name="description"
                             type="text"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
+                            value={formData.description ?? ''}
+                            onChange={handleChange}
                             required
                             className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
                         />
