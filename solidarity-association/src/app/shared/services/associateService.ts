@@ -1,13 +1,15 @@
 import { AssociateModel } from '@/app/shared/model/associateModel';
 
 export async function getAssociates(): Promise<AssociateModel[]> {
-    const response = await fetch('/api/associates', {
+    const response = await fetch('/api/associate', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     });
 
     if (!response.ok) throw new Error('Error fetching associates');
+
     const data = await response.json();
+    console.log(data)
     return data.map((item: any) => new AssociateModel(item));
 }
 

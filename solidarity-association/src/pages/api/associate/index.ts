@@ -23,7 +23,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 }
 
 async function getAssociate(req: NextApiRequest, res: NextApiResponse) {
+
+  console.log('2a');
   const result = await runQuery('SELECT * FROM VW_ASSOCIATE', {});
+  console.log(result,'2');
   return res.status(200).json(result.rows);
 }
 

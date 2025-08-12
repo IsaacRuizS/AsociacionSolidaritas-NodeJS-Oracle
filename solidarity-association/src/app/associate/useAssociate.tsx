@@ -1,36 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AssociateModel } from '@/app/shared/model/associateModel';
-import { createAssociate, updateAssociate, deleteAssociate } from '@/app/shared/services/associateService';
-
-const mockData: AssociateModel[] = [
-    new AssociateModel({
-        associateId: 1,
-        nationalId: '1-1111-1111',
-        firstName: 'Juan',
-        lastName1: 'Pérez',
-        lastName2: 'Soto',
-        email: 'juan@example.com',
-        phone: '8888-8888',
-        entryDate: new Date('2021-06-01'),
-        grossSalary: 750000,
-    }),
-    new AssociateModel({
-        associateId: 2,
-        nationalId: '2-2222-2222',
-        firstName: 'Ana',
-        lastName1: 'Ramírez',
-        lastName2: 'Lopez',
-        email: 'ana@example.com',
-        phone: '8999-9999',
-        entryDate: new Date('2022-01-15'),
-        grossSalary: 680000,
-    }),
-];
+import { createAssociate, updateAssociate, deleteAssociate, getAssociates } from '@/app/shared/services/associateService';
 
 export function useAssociate() {
-    const [associates, setAssociates] = useState<AssociateModel[]>(mockData);
+
+    const [associates, setAssociates] = useState<AssociateModel[]>([]);
 
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -38,6 +14,23 @@ export function useAssociate() {
 
     const [selectedAssociate, setSelectedAssociate] = useState<AssociateModel | null>(null);
     const [associateToDelete, setAssociateToDelete] = useState<number | null>(null);
+
+    useEffect(() => {
+
+        const fetchAssociates = async () => {
+        
+            try {
+        
+                const data = await getAssociates();
+                console.log(data, 'a');
+                setAssociates(data.map((a: any) => new AssociateModel(a)));
+        
+            } catch (err: any) {
+                console.error(err);
+            } 
+        };
+        fetchAssociates();
+    }, []);
 
     const handleCreateAssociate = async (data: AssociateModel) => {
         const created = await createAssociate(data);

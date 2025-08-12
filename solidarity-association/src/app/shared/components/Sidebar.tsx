@@ -7,10 +7,20 @@ import Icon from '@mdi/react';
 import {mdiPiggyBank,mdiBank,mdiAccountGroup,mdiAccountPlus} from '@mdi/js';
 
 const navItems = [
-    { label: 'Ahorros', href: '/saving', icon: mdiPiggyBank },
-    { label: 'Créditos', href: '/credit', icon: mdiBank },
     { label: 'Usuarios', href: '/associate', icon: mdiAccountGroup },
-    { label: 'Beneficiarios', href: '/beneficiary', icon: mdiAccountPlus },
+    { label: 'Beneficiarios', href: '/beneficiary', icon: mdiAccountGroup },
+    { label: 'Roles', href: '/role', icon: mdiAccountGroup },
+    { label: 'Condicion laboral', href: '/laborCondition', icon: mdiAccountGroup },
+
+
+    { label: 'Ahorros', href: '/saving', icon: mdiPiggyBank },
+    { label: 'Aporte al ahorro', href: '/savingContribution', icon: mdiPiggyBank },
+    { label: 'Tipo de ahorro', href: '/savingType', icon: mdiPiggyBank },
+    { label: 'Retiro de ahorro', href: '/withdrawal', icon: mdiPiggyBank },
+
+
+    { label: 'Créditos', href: '/credit', icon: mdiBank },
+    { label: 'Estado del credito', href: '/creditStatus', icon: mdiBank },
 ];
 
 export default function Sidebar({ children }: { children: ReactNode }) {
