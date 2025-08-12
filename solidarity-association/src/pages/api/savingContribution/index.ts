@@ -34,6 +34,8 @@ async function postSavingContribution(req: NextApiRequest, res: NextApiResponse)
     AMOUNT: { val: nuevaContribucion.amount, type: oracledb.NUMBER },
     DATE_SAVING_CONTRIBUTION: { val: nuevaContribucion.dateSavingContribution, type: oracledb.DATE },
   });
+
+  console.log(result);
   return res.status(201).json({ message: 'Contribución de ahorro creada', data: nuevaContribucion });
 }
 

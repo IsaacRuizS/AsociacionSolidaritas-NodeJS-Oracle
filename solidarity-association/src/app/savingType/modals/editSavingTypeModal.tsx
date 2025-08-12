@@ -1,35 +1,49 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { SavingTypeModel } from '@/app/shared/model/savingModel';
 
 type Props = {
     show: boolean;
-    currentEdit: { name: string; description: string };
+    currentEdit: SavingTypeModel;
     onClose: () => void;
-    onSave: (name: string, description: string) => void;
+    onSave: (data: SavingTypeModel) => void;
 };
 
 export default function EditSavingTypeModal({ show, currentEdit, onClose, onSave }: Props) {
-    const [name, setName] = useState(currentEdit.name);
-    const [description, setDescription] = useState(currentEdit.description);
 
+    const [name, setName] = useState(currentEdit.name ?? '');
+    const [description, setDescription] = useState(currentEdit.description ?? '');
+
+    // handler para el cambio de los inputs
     useEffect(() => {
-        setName(currentEdit.name);
-        setDescription(currentEdit.description);
+        setName(currentEdit.name ?? '');
+        setDescription(currentEdit.description ?? '');
     }, [currentEdit]);
 
+    // handler para mostrar el modal
     if (!show) return null;
 
-    const handleSubmit = (e: React.FormEvent) => {
+    // handler para el envío del formulario
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        onSave(name, description);
+
+        const updated = new SavingTypeModel();
+        updated.savingTypeId = currentEdit.savingTypeId;
+        updated.name = name.trim();
+        updated.description = description.trim();
+
+        onSave(updated);
         onClose();
     };
 
     return (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-white/30 z-50">
             <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6">
-                <h2 className="text-lg font-semibold text-center mb-4 text-[#1F2937]">Editar Tipo de Ahorro</h2>
+                <h2 className="text-lg font-semibold text-center mb-4 text-[#1F2937]">
+                    Editar Tipo de Ahorro
+                </h2>
+
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label className="text-sm text-gray-700 mb-1 block">Nombre</label>
@@ -51,6 +65,7 @@ export default function EditSavingTypeModal({ show, currentEdit, onClose, onSave
                             className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
                         />
                     </div>
+
                     <div className="flex justify-between gap-4 mt-6">
                         <button
                             type="button"

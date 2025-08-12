@@ -1,7 +1,7 @@
 import { SavingContributionModel } from '@/app/shared/model/savingModel';
 
 export async function getSavingContributions(): Promise<SavingContributionModel[]> {
-    const response = await fetch('/api/saving-contributions', {
+    const response = await fetch('/api/savingContribution', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     });
@@ -12,7 +12,7 @@ export async function getSavingContributions(): Promise<SavingContributionModel[
 }
 
 export async function createSavingContribution(contribution: SavingContributionModel) {
-    const response = await fetch('/api/saving-contribution', {
+    const response = await fetch('/api/savingContribution', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(contribution),
@@ -23,7 +23,7 @@ export async function createSavingContribution(contribution: SavingContributionM
 }
 
 export async function updateSavingContribution(contribution: SavingContributionModel) {
-    const response = await fetch(`/api/saving-contribution`, {
+    const response = await fetch(`/api/savingContribution`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(contribution),
@@ -34,7 +34,7 @@ export async function updateSavingContribution(contribution: SavingContributionM
 }
 
 export async function deleteSavingContribution(contributionId: number) {
-    const response = await fetch(`/api/saving-contribution/${contributionId}`, {
+    const response = await fetch(`/api/savingContribution/${contributionId}`, {
         method: 'DELETE',
     });
 

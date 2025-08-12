@@ -1,29 +1,41 @@
 'use client';
 
+import { SavingTypeModel } from '@/app/shared/model/savingModel';
+
 type Props = {
     show: boolean;
     onClose: () => void;
-    onCreate?: (data: { name: string; description: string }) => void;
+    onCreate?: (data: SavingTypeModel) => void;
 };
 
 export default function CreateSavingTypeModal({ show, onClose, onCreate }: Props) {
+
+    // handler para mostrar el modal
     if (!show) return null;
 
-    const handleSubmit = (e: React.FormEvent) => {
+    // handler para el envío del formulario
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        
         e.preventDefault();
-        const form = e.target as HTMLFormElement;
+        const form = e.currentTarget;
 
-        const name = (form.elements.namedItem('name') as HTMLInputElement).value;
-        const description = (form.elements.namedItem('description') as HTMLInputElement).value;
+        const name = (form.elements.namedItem('name') as HTMLInputElement).value.trim();
+        const description = (form.elements.namedItem('description') as HTMLInputElement).value.trim();
 
-        onCreate?.({ name, description });
+        const newType = new SavingTypeModel();
+        newType.name = name;
+        newType.description = description;
+
+        onCreate?.(newType);
         onClose();
     };
 
     return (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-white/10 z-50">
             <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6">
-                <h2 className="text-lg font-semibold text-center mb-4 text-[#1F2937]">Crear Tipo de Ahorro</h2>
+                <h2 className="text-lg font-semibold text-center mb-4 text-[#1F2937]">
+                    Crear Tipo de Ahorro
+                </h2>
 
                 <form className="space-y-4" onSubmit={handleSubmit}>
                     <input

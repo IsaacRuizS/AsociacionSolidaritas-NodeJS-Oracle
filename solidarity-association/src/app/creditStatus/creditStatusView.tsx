@@ -47,13 +47,13 @@ export default function CreditStatusView() {
                         </tr>
                     </thead>
                     <tbody>
-                        {statuses.map((s) => (
-                            <tr key={s.statusId} className="hover:bg-gray-50 border-t border-gray-200">
+                        {statuses.map((s, index) => (
+                            <tr key={s.statusId ?? index} className="hover:bg-gray-50 border-t border-gray-200">
                                 <td className="px-4 py-3 text-center">{s.statusId?.toString().padStart(2, '0')}</td>
                                 <td className="px-4 py-3 text-center font-medium">{s.description}</td>
                                 <td className="px-4 py-3 text-center">
                                     <div className="flex justify-center items-center gap-2">
-                                        <div onClick={() => handleEditClick(s.statusId!, s.description!)}>
+                                        <div onClick={() => handleEditClick(s)}>
                                             <Icon path={mdiPencil} size={1} />
                                         </div>
                                         <div onClick={() => handleDeleteClick(s.statusId!)}>
@@ -82,7 +82,7 @@ export default function CreditStatusView() {
                 show={showDeleteModal}
                 onClose={() => setShowDeleteModal(false)}
                 onConfirm={handleConfirmDelete}
-                message="¿Deseas eliminar este estado? Esta acción no se puede deshacer."
+                message="¿Deseas eliminar este estado de crédito? Esta acción no se puede deshacer."
             />
         </Sidebar>
     );

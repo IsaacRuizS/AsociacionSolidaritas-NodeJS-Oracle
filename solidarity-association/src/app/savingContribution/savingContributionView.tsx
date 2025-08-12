@@ -27,6 +27,7 @@ export default function SavingContributionView() {
 
     return (
         <Sidebar>
+            {/* Header */}
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold text-[#1F2937]">Aportes a Ahorros</h1>
                 <button
@@ -37,6 +38,7 @@ export default function SavingContributionView() {
                 </button>
             </div>
 
+            {/* Tabla */}
             <div className="overflow-x-auto bg-white shadow rounded-lg">
                 <table className="min-w-full table-auto text-sm">
                     <thead className="bg-gray-100 text-gray-700 font-medium text-left">
@@ -48,19 +50,36 @@ export default function SavingContributionView() {
                         </tr>
                     </thead>
                     <tbody>
-                        {contributions.map((c) => (
-                            <tr key={c.contributionId} className="hover:bg-gray-50 border-t border-gray-200">
-                                <td className="px-4 py-3 text-center">{c.contributionId?.toString().padStart(2, '0')}</td>
-                                <td className="px-4 py-3 text-center font-medium">₡{c.amount?.toLocaleString('es-CR')}</td>
-                                <td className="px-4 py-3 text-center">{c.date?.toLocaleDateString('es-CR')}</td>
+                        {contributions.map((c, index) => (
+                            <tr
+                                key={c.contributionId ?? index}
+                                className="hover:bg-gray-50 border-t border-gray-200"
+                            >
+                                <td className="px-4 py-3 text-center">
+                                    {c.contributionId?.toString().padStart(2, '0')}
+                                </td>
+                                <td className="px-4 py-3 text-center font-medium">
+                                    ₡{c.amount?.toLocaleString('es-CR')}
+                                </td>
+                                <td className="px-4 py-3 text-center">
+                                    {c.date
+                                        ? new Date(c.date).toLocaleDateString('es-CR')
+                                        : ''}
+                                </td>
                                 <td className="px-4 py-3 text-center">
                                     <div className="flex justify-center items-center gap-2">
-                                        <div onClick={() => handleEditClick(c.contributionId!, c.amount!, c.date!.toISOString().split('T')[0])}>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleEditClick(c.contributionId!)}
+                                        >
                                             <Icon path={mdiPencil} size={1} />
-                                        </div>
-                                        <div onClick={() => handleDeleteClick(c.contributionId!)}>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleDeleteClick(c.contributionId!)}
+                                        >
                                             <Icon path={mdiTrashCan} size={1} />
-                                        </div>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -69,6 +88,7 @@ export default function SavingContributionView() {
                 </table>
             </div>
 
+            {/* Modales */}
             <CreateSavingContributionModal
                 show={showCreateModal}
                 onClose={() => setShowCreateModal(false)}

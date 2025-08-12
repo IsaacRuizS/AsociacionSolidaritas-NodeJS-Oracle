@@ -3,14 +3,27 @@
 import { useSaving } from './useSaving';
 import Sidebar from '@/app/shared/components/Sidebar';
 import Icon from '@mdi/react';
-import { mdiCashPlus, mdiPlusCircleOutline, mdiTrashCan } from '@mdi/js';
+import { mdiPencil, mdiTrashCan, mdiPlusCircleOutline } from '@mdi/js';
 import CreateSavingModal from './modals/createSavingModal';
-import EditCuotaModal from './modals/editCuotaModal';
+import EditSavingModal from './modals/editSavingModal';
 import ConfirmDeleteModal from '@/app/shared/components/confirmDeleteModal';
 
 export default function SavingView() {
-
-    const { savings, showCreateModal, setShowCreateModal, showEditModal, setShowEditModal, selectedCuota, handleEditClick, handleSaveCuota, handleCreateSaving, showDeleteModal, setShowDeleteModal, handleDeleteClick, handleConfirmDelete } = useSaving();
+    const {
+        savings,
+        showCreateModal,
+        setShowCreateModal,
+        showEditModal,
+        setShowEditModal,
+        selectedEdit,
+        handleEditClick,
+        handleSaveEdit,
+        handleCreateSaving,
+        showDeleteModal,
+        setShowDeleteModal,
+        handleDeleteClick,
+        handleConfirmDelete,
+    } = useSaving();
 
     return (
         <Sidebar>
@@ -33,55 +46,78 @@ export default function SavingView() {
                             <th className="px-4 py-3 text-center">Id</th>
                             <th className="px-4 py-3 text-center">Descripción</th>
                             <th className="px-4 py-3 text-center">Saldo actual</th>
-                            <th className="px-4 py-3 text-center">Siguiente</th>
+                            <th className="px-4 py-3 text-center">Cuota mensual</th>
                             <th className="px-4 py-3 text-center">Tasa interés</th>
+                            <th className="px-4 py-3 text-center">Interés generado</th>
                             <th className="px-4 py-3 text-center">Plazo</th>
-                            <th className="px-4 py-3 text-center">Cambiar Couta</th>
-                            <th className="px-4 py-3 text-center">Eliminar</th>
+                            <th className="px-4 py-3 text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {savings.map((a) => (
-                            <tr key={a.savingId} className="hover:bg-gray-50 border-t border-gray-200">
-                                <td className="px-4 py-3 text-center">{a.savingId?.toString().padStart(2, '0')}</td>
-                                <td className="px-4 py-3 text-center font-medium">{a.name}</td>
-                                <td className="px-4 py-3 text-center">₡{a.currentBalance?.toLocaleString('es-CR')}</td>
-                                <td className="px-4 py-3 text-center">₡{a.monthlyAmount?.toLocaleString('es-CR')}</td>
-                                <td className="px-4 py-3 text-center">{a.interestRate?.toString()}</td>
-                                <td className="px-4 py-3 text-center">{a.deadline?.toString().slice(0, 10)}</td>
+                        {savings.map((s, index) => (
+                            <tr
+                                key={s.savingId ?? index}
+                                className="hover:bg-gray-50 border-t border-gray-200"
+                            >
                                 <td className="px-4 py-3 text-center">
-                                    <div className="flex justify-center items-center" onClick={() => handleEditClick(a.savingId!, a.monthlyAmount!)}>
-                                        <Icon path={mdiCashPlus} size={1} />
-                                    </div>
+                                    {s.savingId?.toString().padStart(2, '0')}
+                                </td>
+                                <td className="px-4 py-3 text-center font-medium">{s.name}</td>
+                                <td className="px-4 py-3 text-center">
+                                    ₡{s.currentBalance?.toLocaleString('es-CR')}
                                 </td>
                                 <td className="px-4 py-3 text-center">
-                                    <div className="flex justify-center items-center" onClick={() => handleDeleteClick(a.savingId!)}>
-                                        <Icon path={mdiTrashCan} size={1} />
+                                    ₡{s.monthlyAmount?.toLocaleString('es-CR')}
+                                </td>
+                                <td className="px-4 py-3 text-center">{s.interestRate}%</td>
+                                <td className="px-4 py-3 text-center">₡{s.generatedInterest?.toLocaleString('es-CR')}</td>
+                                <td className="px-4 py-3 text-center">
+                                    {s.deadline
+                                        ? new Date(s.deadline).toISOString().split('T')[0]
+                                        : ''}
+                                </td>
+                                <td className="px-4 py-3 text-center">
+                                    <div className="flex justify-center items-center gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => handleEditClick(s.savingId!)}
+                                        >
+                                            <Icon path={mdiPencil} size={1} />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleDeleteClick(s.savingId!)}
+                                        >
+                                            <Icon path={mdiTrashCan} size={1} />
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
-                        ))} 
+                        ))}
                     </tbody>
                 </table>
             </div>
 
-            <CreateSavingModal 
-                show={showCreateModal} 
-                onClose={() => setShowCreateModal(false)} 
-                onCreate={handleCreateSaving} />
-            <EditCuotaModal
-                show={showEditModal}
-                currentCuota={selectedCuota}
-                onClose={() => setShowEditModal(false)}
-                onSave={handleSaveCuota}
+            {/* Modales */}
+            <CreateSavingModal
+                show={showCreateModal}
+                onClose={() => setShowCreateModal(false)}
+                onCreate={handleCreateSaving}
             />
+
+            <EditSavingModal
+                show={showEditModal}
+                currentEdit={selectedEdit}
+                onClose={() => setShowEditModal(false)}
+                onSave={handleSaveEdit}
+            />
+
             <ConfirmDeleteModal
                 show={showDeleteModal}
                 onClose={() => setShowDeleteModal(false)}
                 onConfirm={handleConfirmDelete}
                 message="¿Deseas eliminar este ahorro? Esta acción no se puede deshacer."
             />
-
         </Sidebar>
     );
 }

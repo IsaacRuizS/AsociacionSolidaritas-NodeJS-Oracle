@@ -1,25 +1,34 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SavingTypeModel } from '@/app/shared/model/savingModel';
-import { createSavingType, updateSavingType, deleteSavingType } from '@/app/shared/services/savingTypeService';
-
-const mockData: SavingTypeModel[] = [
-    new SavingTypeModel({ savingTypeId: 1, name: 'Navideño', description: 'Ahorro para navidad' }),
-    new SavingTypeModel({ savingTypeId: 2, name: 'Educación', description: 'Ahorro para estudios' }),
-];
+import { createSavingType, updateSavingType, deleteSavingType, getSavingTypes } from '@/app/shared/services/savingTypeService';
 
 export function useSavingType() {
-    const [types, setTypes] = useState<SavingTypeModel[]>(mockData);
+
+    const [types, setTypes] = useState<SavingTypeModel[]>([]);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [typeToAction, setTypeToAction] = useState<number | null>(null);
-    const [selectedEdit, setSelectedEdit] = useState<{ name: string; description: string }>({ name: '', description: '' });
+    const [selectedEdit, setSelectedEdit] = useState<SavingTypeModel>(new SavingTypeModel());
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-    const handleEditClick = (savingTypeId: number, name: string, description: string) => {
-        setSelectedEdit({ name, description });
-        setTypeToAction(savingTypeId);
+    // Cargar tipos de ahorro desde API
+    useEffect(() => {
+        const fetchSavingTypes = async () => {
+            try {
+                const data = await getSavingTypes();
+                setTypes(data);
+            } catch (err: any) {
+                console.error(err);
+            }
+        };
+        fetchSavingTypes();
+    }, []);
+
+    const handleEditClick = (type: SavingTypeModel) => {
+        setSelectedEdit(type);
+        setTypeToAction(type.savingTypeId ?? null);
         setShowEditModal(true);
     };
 
@@ -36,23 +45,22 @@ export function useSavingType() {
         setShowDeleteModal(false);
     };
 
-    const handleSaveEdit = async (name: string, description: string) => {
+    const handleSaveEdit = async (updatedType: SavingTypeModel) => {
+
+        await updateSavingType(updatedType);
         setShowEditModal(false);
-        if (typeToAction !== null) {
-            const savingType = types.find((t) => t.savingTypeId === typeToAction);
-            if (savingType) {
-                const updated = new SavingTypeModel({ ...savingType, name, description });
-                await updateSavingType(updated);
-                setTypes((prev) => prev.map((t) => t.savingTypeId === updated.savingTypeId ? updated : t));
-            }
-        }
+
+        const data = await getSavingTypes();
+        setTypes(data);
     };
 
-    const handleCreateType = async (newData: { name: string; description: string }) => {
-        const newType = new SavingTypeModel({ name: newData.name, description: newData.description });
+    const handleCreateType = async (newType: SavingTypeModel) => {
+        
         const saved = await createSavingType(newType);
-        setTypes((prev) => [...prev, new SavingTypeModel(saved)]);
         setShowCreateModal(false);
+
+        const data = await getSavingTypes();
+        setTypes(data);
     };
 
     return {

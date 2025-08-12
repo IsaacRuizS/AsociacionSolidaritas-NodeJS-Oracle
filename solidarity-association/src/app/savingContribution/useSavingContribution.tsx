@@ -1,33 +1,53 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SavingContributionModel } from '@/app/shared/model/savingModel';
-import { createSavingContribution, updateSavingContribution, deleteSavingContribution } from '@/app/shared/services/savingContributionService';
-
-const mockData: SavingContributionModel[] = [
-    new SavingContributionModel({ contributionId: 1, savingId: 1, amount: 5000, date: new Date() }),
-    new SavingContributionModel({ contributionId: 2, savingId: 1, amount: 7500, date: new Date() }),
-];
+import {
+    createSavingContribution,
+    updateSavingContribution,
+    deleteSavingContribution,
+    getSavingContributions
+} from '@/app/shared/services/savingContributionService';
 
 export function useSavingContribution() {
-    const [contributions, setContributions] = useState<SavingContributionModel[]>(mockData);
+    const [contributions, setContributions] = useState<SavingContributionModel[]>([]);
+
+    // Modales
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
-    const [contributionToAction, setContributionToAction] = useState<number | null>(null);
-    const [selectedEdit, setSelectedEdit] = useState<{ amount: number; date: string }>({ amount: 0, date: '' });
+    const [selectedEdit, setSelectedEdit] = useState<SavingContributionModel | null>(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [contributionToAction, setContributionToAction] = useState<number | null>(null);
 
-    const handleEditClick = (contributionId: number, amount: number, date: string) => {
-        setSelectedEdit({ amount, date });
-        setContributionToAction(contributionId);
-        setShowEditModal(true);
+    // Cargar aportes desde API
+    useEffect(() => {
+        const fetchContributions = async () => {
+            try {
+                const data = await getSavingContributions();
+                setContributions(data);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        fetchContributions();
+    }, []);
+
+    // Abrir modal de edición
+    const handleEditClick = (contributionId: number) => {
+        const contribution = contributions.find((c) => c.contributionId === contributionId);
+        if (contribution) {
+            setSelectedEdit(contribution);
+            setShowEditModal(true);
+        }
     };
 
+    // Abrir modal de eliminación
     const handleDeleteClick = (id: number) => {
         setContributionToAction(id);
         setShowDeleteModal(true);
     };
 
+    // Confirmar eliminación
     const handleConfirmDelete = async () => {
         if (contributionToAction !== null) {
             await deleteSavingContribution(contributionToAction);
@@ -36,23 +56,22 @@ export function useSavingContribution() {
         setShowDeleteModal(false);
     };
 
-    const handleSaveEdit = async (amount: number, date: string) => {
+    // Guardar cambios de edición
+    const handleSaveEdit = async (updatedContribution: SavingContributionModel) => {
+        await updateSavingContribution(updatedContribution);
         setShowEditModal(false);
-        if (contributionToAction !== null) {
-            const contribution = contributions.find((c) => c.contributionId === contributionToAction);
-            if (contribution) {
-                const updated = new SavingContributionModel({ ...contribution, amount, date: new Date(date) });
-                await updateSavingContribution(updated);
-                setContributions((prev) => prev.map((c) => c.contributionId === updated.contributionId ? updated : c));
-            }
-        }
+
+        const data = await getSavingContributions();
+        setContributions(data);
     };
 
-    const handleCreateContribution = async (newData: { amount: number; date: string }) => {
-        const newContribution = new SavingContributionModel({ amount: newData.amount, date: new Date(newData.date) });
-        const saved = await createSavingContribution(newContribution);
-        setContributions((prev) => [...prev, new SavingContributionModel(saved)]);
+    // Crear nuevo aporte
+    const handleCreateContribution = async (newContribution: SavingContributionModel) => {
+        await createSavingContribution(newContribution);
         setShowCreateModal(false);
+
+        const data = await getSavingContributions();
+        setContributions(data);
     };
 
     return {

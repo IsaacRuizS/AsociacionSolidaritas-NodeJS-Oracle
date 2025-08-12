@@ -1,30 +1,35 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CreditStatusModel } from '@/app/shared/model/creditModel';
-import { createCreditStatus, updateCreditStatus, deleteCreditStatus } from '@/app/shared/services/creditStatusService';
-
-const mockData: CreditStatusModel[] = [
-    new CreditStatusModel({ statusId: 1, description: 'Activo' }),
-    new CreditStatusModel({ statusId: 2, description: 'En mora' }),
-    new CreditStatusModel({ statusId: 3, description: 'Cancelado' }),
-];
+import { createCreditStatus, updateCreditStatus, deleteCreditStatus, getCreditStatuses } from '@/app/shared/services/creditStatusService';
 
 export function useCreditStatus() {
-    const [statuses, setStatuses] = useState<CreditStatusModel[]>(mockData);
+    const [statuses, setStatuses] = useState<CreditStatusModel[]>([]);
 
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [statusToAction, setStatusToAction] = useState<number | null>(null);
-    const [selectedEdit, setSelectedEdit] = useState<{ description: string }>({
-        description: '',
-    });
+    const [selectedEdit, setSelectedEdit] = useState<CreditStatusModel>(new CreditStatusModel({ description: '' }));
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-    const handleEditClick = (statusId: number, description: string) => {
-        setSelectedEdit({ description });
-        setStatusToAction(statusId);
+    // Cargar estados de crédito desde API
+    useEffect(() => {
+        const fetchStatuses = async () => {
+            try {
+                const data = await getCreditStatuses();
+                setStatuses(data);
+            } catch (err: any) {
+                console.error(err);
+            }
+        };
+        fetchStatuses();
+    }, []);
+
+    const handleEditClick = (status: CreditStatusModel) => {
+        setSelectedEdit(status);
+        setStatusToAction(status.statusId ?? null);
         setShowEditModal(true);
     };
 
@@ -41,29 +46,24 @@ export function useCreditStatus() {
         setShowDeleteModal(false);
     };
 
-    const handleSaveEdit = async (description: string) => {
+    const handleSaveEdit = async (status: CreditStatusModel) => {
+
+        await updateCreditStatus(status);
         setShowEditModal(false);
 
-        if (statusToAction !== null) {
-            const status = statuses.find((s) => s.statusId === statusToAction);
-            if (status) {
-                const updated = new CreditStatusModel({
-                    ...status,
-                    description,
-                });
-                await updateCreditStatus(updated);
-                setStatuses((prev) =>
-                    prev.map((s) => s.statusId === updated.statusId ? updated : s)
-                );
-            }
-        }
+        //recargar data
+        const data = await getCreditStatuses();
+        setStatuses(data);
     };
 
-    const handleCreateStatus = async (newData: { description: string }) => {
-        const newStatus = new CreditStatusModel({ description: newData.description });
-        const saved = await createCreditStatus(newStatus);
-        setStatuses((prev) => [...prev, new CreditStatusModel(saved)]);
+    const handleCreateStatus = async (status: CreditStatusModel) => {
+
+        const saved = await createCreditStatus(status);
         setShowCreateModal(false);
+        
+        //recargar data
+        const data = await getCreditStatuses();
+        setStatuses(data);
     };
 
     return {

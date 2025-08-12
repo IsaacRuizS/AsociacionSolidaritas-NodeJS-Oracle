@@ -27,6 +27,7 @@ export default function WithdrawalView() {
 
     return (
         <Sidebar>
+            {/* Header */}
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold text-[#1F2937]">Retiros</h1>
                 <button
@@ -37,6 +38,7 @@ export default function WithdrawalView() {
                 </button>
             </div>
 
+            {/* Tabla */}
             <div className="overflow-x-auto bg-white shadow rounded-lg">
                 <table className="min-w-full table-auto text-sm">
                     <thead className="bg-gray-100 text-gray-700 font-medium text-left">
@@ -48,19 +50,34 @@ export default function WithdrawalView() {
                         </tr>
                     </thead>
                     <tbody>
-                        {withdrawals.map((w) => (
-                            <tr key={w.withdrawalId} className="hover:bg-gray-50 border-t border-gray-200">
-                                <td className="px-4 py-3 text-center">{w.withdrawalId?.toString().padStart(2, '0')}</td>
-                                <td className="px-4 py-3 text-center">₡{w.amount?.toLocaleString('es-CR')}</td>
-                                <td className="px-4 py-3 text-center">{w.date?.toLocaleDateString('es-CR')}</td>
+                        {withdrawals.map((w, index) => (
+                            <tr
+                                key={w.withdrawalId ?? index}
+                                className="hover:bg-gray-50 border-t border-gray-200"
+                            >
+                                <td className="px-4 py-3 text-center">
+                                    {w.withdrawalId?.toString().padStart(2, '0')}
+                                </td>
+                                <td className="px-4 py-3 text-center">
+                                    ₡{w.amount?.toLocaleString('es-CR')}
+                                </td>
+                                <td className="px-4 py-3 text-center">
+                                    {w.date ? new Date(w.date).toLocaleDateString('es-CR') : ''}
+                                </td>
                                 <td className="px-4 py-3 text-center">
                                     <div className="flex justify-center items-center gap-2">
-                                        <div onClick={() => handleEditClick(w.withdrawalId!, w.amount!, w.date!.toISOString())}>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleEditClick(w.withdrawalId!)}
+                                        >
                                             <Icon path={mdiPencil} size={1} />
-                                        </div>
-                                        <div onClick={() => handleDeleteClick(w.withdrawalId!)}>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleDeleteClick(w.withdrawalId!)}
+                                        >
                                             <Icon path={mdiTrashCan} size={1} />
-                                        </div>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -69,6 +86,7 @@ export default function WithdrawalView() {
                 </table>
             </div>
 
+            {/* Modales */}
             <CreateWithdrawalModal
                 show={showCreateModal}
                 onClose={() => setShowCreateModal(false)}

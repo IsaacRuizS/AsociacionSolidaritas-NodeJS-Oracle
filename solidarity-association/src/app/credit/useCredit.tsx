@@ -1,42 +1,63 @@
 'use client';
 
-import { useState } from 'react';
-import { CreditModel } from '@/app/shared/model/creditModel';
-import { createCredit, deleteCredit, updateCredit } from '@/app/shared/services/creditService';
-
-const mockData: CreditModel[] = [
-    new CreditModel({ creditId: 1, name: 'Préstamo Moto', requestedAmount: 1000000, currentBalance: 5000000, monthlyPayment: 50000, interestRate: 19, termMonths: 15 }),
-    new CreditModel({ creditId: 2, name: 'Préstamo Carro', requestedAmount: 1000000, currentBalance: 5000000, monthlyPayment: 50000, interestRate: 19, termMonths: 15 }),
-    new CreditModel({ creditId: 3, name: 'Préstamo Navideño', requestedAmount: 900000, currentBalance: 5000000, monthlyPayment: 50000, interestRate: 19, termMonths: 15 }),
-    new CreditModel({ creditId: 4, name: 'Préstamo Marchamo', requestedAmount: 900000, currentBalance: 5000000, monthlyPayment: 50000, interestRate: 19, termMonths: 15 }),
-];
+import { useEffect, useState } from 'react';
+import { CreditModel, CreditStatusModel } from '@/app/shared/model/creditModel';
+import { createCredit, deleteCredit, updateCredit, getCredits } from '@/app/shared/services/creditService';
+import { AssociateModel } from '../shared/model/associateModel';
+import { getAssociates } from '../shared/services/associateService';
+import { getCreditStatuses } from '../shared/services/creditStatusService';
 
 export function useCredit() {
-    const [credits, setCredits] = useState<CreditModel[]>(mockData);
+
+    const [credits, setCredits] = useState<CreditModel[]>([]);
+    const [statuses, setStatuses] = useState<CreditStatusModel[]>([]);
+    const [associates, setAssociates] = useState<AssociateModel[]>([]);
 
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
-    const [creditToAction, setCreditToAction] = useState<number | null>(null);
-    const [selectedEdit, setSelectedEdit] = useState<{ cuota: number; termmonths: number; interest: number; requested: number }>({
-        cuota: 0,
-        termmonths: 0,
-        interest: 0,
-        requested: 0,
-    });
-
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-    const handleEditClick = (creditId: number, cuota: number, term: number, interest: number, requested: number) => {
-        setSelectedEdit({ cuota, termmonths: term, interest, requested });
-        setCreditToAction(creditId);
+    const [creditToAction, setCreditToAction] = useState<number | null>(null);
+    const [selectedEdit, setSelectedEdit] = useState<CreditModel>(new CreditModel());
+
+    // Efecto para obtener créditos
+    useEffect(() => {
+
+        const fetchCredits = async () => {
+
+            try {
+
+                const data = await getCredits();
+                setCredits(data);
+
+                const associates = await getAssociates();
+                setAssociates(associates);
+
+                const creditStatus = await getCreditStatuses();
+                setStatuses(creditStatus);
+
+            } catch (err: any) {
+                console.error(err);
+            } 
+        };
+
+        fetchCredits();
+    }, []);
+
+    // Abrir modal de edición
+    const handleEditClick = (credit: CreditModel) => {
+        setSelectedEdit(credit);
+        setCreditToAction(credit.creditId ?? null);
         setShowEditModal(true);
     };
 
+    // Abrir modal de eliminación
     const handleDeleteClick = (id: number) => {
         setCreditToAction(id);
         setShowDeleteModal(true);
     };
 
+    // Confirmar eliminación
     const handleConfirmDelete = async () => {
         if (creditToAction !== null) {
             await deleteCredit(creditToAction);
@@ -45,45 +66,19 @@ export function useCredit() {
         setShowDeleteModal(false);
     };
 
-    const handleSaveEdit = async (cuota: number, termMonths: number, interest: number, requested: number) => {
-        
+    // Guardar edición
+    const handleSaveEdit = async (updated: CreditModel) => {
         setShowEditModal(false);
-
         if (creditToAction !== null) {
-            const credit = credits.find((c) => c.creditId === creditToAction);
-            if (credit) {
-                const updated = new CreditModel({
-                    ...credit,
-                    monthlyPayment: cuota,
-                    termMonths: termMonths,
-                    interestRate: interest,
-                    requestedAmount: requested,
-                });
-                await updateCredit(updated);
-                setCredits((prev) =>
-                    prev.map((c) => c.creditId === updated.creditId ? updated : c)
-                );
-            }
+            await updateCredit(updated);
+            setCredits((prev) =>
+                prev.map((c) => c.creditId === updated.creditId ? updated : c)
+            );
         }
     };
 
-    const handleCreateCredit = async (newData: {
-        description: string;
-        installment: number;
-        term: number;
-        interest: number;
-        requested: number;
-        balance: number;
-    }) => {
-        const newCredit = new CreditModel({
-            name: newData.description,
-            monthlyPayment: newData.installment,
-            termMonths: newData.term,
-            interestRate: newData.interest,
-            requestedAmount: newData.requested,
-            currentBalance: newData.balance,
-        });
-    
+    // Crear nuevo
+    const handleCreateCredit = async (newCredit: CreditModel) => {
         const saved = await createCredit(newCredit);
         setCredits((prev) => [...prev, new CreditModel(saved)]);
         setShowCreateModal(false);
@@ -91,6 +86,8 @@ export function useCredit() {
 
     return {
         credits,
+        associates,
+        statuses,
         showCreateModal,
         setShowCreateModal,
         showEditModal,

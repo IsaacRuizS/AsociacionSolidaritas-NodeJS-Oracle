@@ -1,33 +1,53 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { WithdrawalModel } from '@/app/shared/model/savingModel';
-import { createWithdrawal, updateWithdrawal, deleteWithdrawal } from '@/app/shared/services/withdrawalService';
-
-const mockData: WithdrawalModel[] = [
-    new WithdrawalModel({ withdrawalId: 1, savingId: 1, amount: 10000, date: new Date() }),
-    new WithdrawalModel({ withdrawalId: 2, savingId: 2, amount: 25000, date: new Date() }),
-];
+import {
+    createWithdrawal,
+    updateWithdrawal,
+    deleteWithdrawal,
+    getWithdrawals
+} from '@/app/shared/services/withdrawalService';
 
 export function useWithdrawal() {
-    const [withdrawals, setWithdrawals] = useState<WithdrawalModel[]>(mockData);
+    const [withdrawals, setWithdrawals] = useState<WithdrawalModel[]>([]);
+
+    // Modales
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
-    const [withdrawalToAction, setWithdrawalToAction] = useState<number | null>(null);
-    const [selectedEdit, setSelectedEdit] = useState<{ amount: number; date: string }>({ amount: 0, date: '' });
+    const [selectedEdit, setSelectedEdit] = useState<WithdrawalModel | null>(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [withdrawalToAction, setWithdrawalToAction] = useState<number | null>(null);
 
-    const handleEditClick = (withdrawalId: number, amount: number, date: string) => {
-        setSelectedEdit({ amount, date });
-        setWithdrawalToAction(withdrawalId);
-        setShowEditModal(true);
+    // Cargar retiros desde API
+    useEffect(() => {
+        const fetchWithdrawals = async () => {
+            try {
+                const data = await getWithdrawals();
+                setWithdrawals(data);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        fetchWithdrawals();
+    }, []);
+
+    // Abrir modal de edición
+    const handleEditClick = (withdrawalId: number) => {
+        const withdrawal = withdrawals.find((w) => w.withdrawalId === withdrawalId);
+        if (withdrawal) {
+            setSelectedEdit(withdrawal);
+            setShowEditModal(true);
+        }
     };
 
+    // Abrir modal de eliminación
     const handleDeleteClick = (id: number) => {
         setWithdrawalToAction(id);
         setShowDeleteModal(true);
     };
 
+    // Confirmar eliminación
     const handleConfirmDelete = async () => {
         if (withdrawalToAction !== null) {
             await deleteWithdrawal(withdrawalToAction);
@@ -36,23 +56,22 @@ export function useWithdrawal() {
         setShowDeleteModal(false);
     };
 
-    const handleSaveEdit = async (amount: number, date: string) => {
+    // Guardar cambios
+    const handleSaveEdit = async (updatedWithdrawal: WithdrawalModel) => {
+        await updateWithdrawal(updatedWithdrawal);
         setShowEditModal(false);
-        if (withdrawalToAction !== null) {
-            const withdrawal = withdrawals.find((w) => w.withdrawalId === withdrawalToAction);
-            if (withdrawal) {
-                const updated = new WithdrawalModel({ ...withdrawal, amount, date: new Date(date) });
-                await updateWithdrawal(updated);
-                setWithdrawals((prev) => prev.map((w) => w.withdrawalId === updated.withdrawalId ? updated : w));
-            }
-        }
+
+        const data = await getWithdrawals();
+        setWithdrawals(data);
     };
 
-    const handleCreateWithdrawal = async (newData: { amount: number; date: string }) => {
-        const newWithdrawal = new WithdrawalModel({ amount: newData.amount, date: new Date(newData.date) });
-        const saved = await createWithdrawal(newWithdrawal);
-        setWithdrawals((prev) => [...prev, new WithdrawalModel(saved)]);
+    // Crear nuevo retiro
+    const handleCreateWithdrawal = async (newWithdrawal: WithdrawalModel) => {
+        await createWithdrawal(newWithdrawal);
         setShowCreateModal(false);
+
+        const data = await getWithdrawals();
+        setWithdrawals(data);
     };
 
     return {

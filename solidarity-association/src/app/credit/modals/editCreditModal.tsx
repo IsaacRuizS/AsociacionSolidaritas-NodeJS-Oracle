@@ -1,100 +1,114 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { CreditModel } from '@/app/shared/model/creditModel';
+import { AssociateModel } from '@/app/shared/model/associateModel';
+import { CreditStatusModel } from '@/app/shared/model/creditModel'; // Ajusta si está en otro archivo
 
 type Props = {
     show: boolean;
-    currentEdit: {
-        cuota: number;
-        termmonths: number;
-        interest: number;
-        requested: number;
-    };
+    associates: AssociateModel[];
+    creditStatuses: CreditStatusModel[];
+    currentData: CreditModel | null;
     onClose: () => void;
-    onSave: (cuota: number, termmonths: number, interest: number, requested: number) => void;
+    onSave: (updated: CreditModel) => void;
 };
 
-export default function EditCreditModal({ show, currentEdit, onClose, onSave }: Props) {
-    const [cuota, setCuota] = useState(currentEdit.cuota);
-    const [termmonths, setTermMonths] = useState(currentEdit.termmonths);
-    const [interest, setInterest] = useState(currentEdit.interest);
-    const [requested, setRequested] = useState(currentEdit.requested);
+export default function EditCreditModal({ 
+    show, 
+    associates, 
+    creditStatuses, 
+    currentData, 
+    onClose, 
+    onSave 
+}: Props) {
+    
+    const [formData, setFormData] = useState<CreditModel>(new CreditModel());
 
+    // Precargar datos cuando se abre el modal
     useEffect(() => {
-        setCuota(currentEdit.cuota);
-        setTermMonths(currentEdit.termmonths);
-        setInterest(currentEdit.interest);
-        setRequested(currentEdit.requested);
-    }, [currentEdit]);
+        if (currentData) {
+            setFormData(currentData);
+        }
+    }, [currentData]);
 
-    if (!show) return null;
+    if (!show || !currentData) return null;
 
+    // Manejar cambios en inputs/selects
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: 
+                name === 'associateId' || name === 'creditStatusId' || name === 'termMonths'
+                    ? parseInt(value, 10)
+                : name === 'requestedAmount' || name === 'currentBalance' || name === 'monthlyPayment' || name === 'interestRate'
+                    ? parseFloat(value)
+                : name === 'requestDate' || name === 'approvalDate'
+                    ? (value ? new Date(value) : undefined)
+                : value
+        }));
+    };
+
+    // Guardar cambios
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSave(cuota, termmonths, interest, requested);
+        onSave(formData);
         onClose();
     };
 
     return (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-white/30 z-50">
             <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6">
-                <h2 className="text-lg font-semibold text-center mb-4 text-[#1F2937]">Editar crédito</h2>
+                <h2 className="text-lg font-semibold text-center mb-4 text-[#1F2937]">Editar Crédito</h2>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="text-sm text-gray-700 mb-1 block">Nueva cuota mensual</label>
-                        <input
-                            type="number"
-                            value={cuota}
-                            onChange={(e) => setCuota(Number(e.target.value))}
-                            required
-                            className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
-                        />
-                    </div>
-                    <div>
-                        <label className="text-sm text-gray-700 mb-1 block">Nuevo plazo (quincenas)</label>
-                        <input
-                            type="number"
-                            value={termmonths}
-                            onChange={(e) => setTermMonths(Number(e.target.value))}
-                            required
-                            className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
-                        />
-                    </div>
-                    <div>
-                        <label className="text-sm text-gray-700 mb-1 block">Nueva tasa de interés (%)</label>
-                        <input
-                            type="number"
-                            step="0.1"
-                            value={interest}
-                            onChange={(e) => setInterest(Number(e.target.value))}
-                            required
-                            className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
-                        />
-                    </div>
-                    <div>
-                        <label className="text-sm text-gray-700 mb-1 block">Nuevo monto total solicitado</label>
-                        <input
-                            type="number"
-                            value={requested}
-                            onChange={(e) => setRequested(Number(e.target.value))}
-                            required
-                            className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
-                        />
-                    </div>
+                    {/* Selector de asociado */}
+                    <select
+                        name="associateId"
+                        value={formData.associateId ?? ''}
+                        onChange={handleChange}
+                        required
+                        className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
+                    >
+                        <option value="">Seleccione un asociado</option>
+                        {associates.map((a) => (
+                            <option key={a.associateId} value={a.associateId}>
+                                {`${a.firstName ?? ''} ${a.lastName1 ?? ''} ${a.lastName2 ?? ''}`}
+                            </option>
+                        ))}
+                    </select>
+
+                    {/* Selector de estado de crédito */}
+                    <select
+                        name="creditStatusId"
+                        value={formData.creditStatusId ?? ''}
+                        onChange={handleChange}
+                        required
+                        className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
+                    >
+                        <option value="">Seleccione un estado</option>
+                        {creditStatuses.map((cs) => (
+                            <option key={cs.statusId} value={cs.statusId}>
+                                {cs.description}
+                            </option>
+                        ))}
+                    </select>
+
+                    <input name="name" type="text" placeholder="Nombre" value={formData.name ?? ''} onChange={handleChange} required className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none" />
+                    <input name="requestedAmount" type="number" step="0.01" placeholder="Monto Solicitado" value={formData.requestedAmount ?? ''} onChange={handleChange} required className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none" />
+                    <input name="termMonths" type="number" placeholder="Plazo (meses)" value={formData.termMonths ?? ''} onChange={handleChange} required className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none" />
+                    <input name="currentBalance" type="number" step="0.01" placeholder="Saldo Actual" value={formData.currentBalance ?? ''} onChange={handleChange} required className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none" />
+                    <input name="monthlyPayment" type="number" step="0.01" placeholder="Cuota Mensual" value={formData.monthlyPayment ?? ''} onChange={handleChange} required className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none" />
+                    <input name="interestRate" type="number" step="0.01" placeholder="Tasa de Interés (%)" value={formData.interestRate ?? ''} onChange={handleChange} required className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none" />
+                    <input name="requestDate" type="date" placeholder="Fecha Solicitud" value={formData.requestDate ? formData.requestDate.toISOString().split('T')[0] : ''} onChange={handleChange} required className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none" />
+                    <input name="approvalDate" type="date" placeholder="Fecha Aprobación" value={formData.approvalDate ? formData.approvalDate.toISOString().split('T')[0] : ''} onChange={handleChange} className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none" />
 
                     <div className="flex justify-between gap-4 mt-6">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
-                        >
+                        <button type="button" onClick={onClose} className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition">
                             Cancelar
                         </button>
-                        <button
-                            type="submit"
-                            className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition"
-                        >
+                        <button type="submit" className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
                             Guardar
                         </button>
                     </div>

@@ -1,7 +1,7 @@
 import { CreditStatusModel } from '@/app/shared/model/creditModel';
 
 export async function getCreditStatuses(): Promise<CreditStatusModel[]> {
-    const response = await fetch('/api/credit-status', {
+    const response = await fetch('/api/creditStatus', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     });
@@ -12,7 +12,7 @@ export async function getCreditStatuses(): Promise<CreditStatusModel[]> {
 }
 
 export async function createCreditStatus(status: CreditStatusModel) {
-    const response = await fetch('/api/credit-status', {
+    const response = await fetch('/api/creditStatus', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(status),
@@ -23,7 +23,7 @@ export async function createCreditStatus(status: CreditStatusModel) {
 }
 
 export async function updateCreditStatus(status: CreditStatusModel) {
-    const response = await fetch(`/api/credit-status`, {
+    const response = await fetch(`/api/creditStatus`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(status),
@@ -34,7 +34,7 @@ export async function updateCreditStatus(status: CreditStatusModel) {
 }
 
 export async function deleteCreditStatus(statusId: number) {
-    const response = await fetch(`/api/credit-status/${statusId}`, {
+    const response = await fetch(`/api/creditStatus/${statusId}`, {
         method: 'DELETE',
     });
 

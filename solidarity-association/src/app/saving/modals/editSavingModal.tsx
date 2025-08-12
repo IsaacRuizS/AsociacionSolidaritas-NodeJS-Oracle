@@ -1,48 +1,59 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SavingModel } from '@/app/shared/model/savingModel';
 
 type Props = {
     show: boolean;
+    currentEdit: SavingModel | null;
     onClose: () => void;
-    onCreate?: (data: SavingModel) => void;
+    onSave: (updated: SavingModel) => void;
 };
 
-export default function CreateSavingModal({ show, onClose, onCreate }: Props) {
+export default function EditSavingModal({ show, currentEdit, onClose, onSave }: Props) {
     const [formData, setFormData] = useState<SavingModel>(new SavingModel());
 
-    if (!show) return null;
+    // Precargar datos cuando cambie el registro a editar
+    useEffect(() => {
+        if (currentEdit) {
+            setFormData(currentEdit);
+        }
+    }, [currentEdit]);
 
-    // Manejar cambios en inputs
+    if (!show || !currentEdit) return null;
+
+    // Manejar cambios en cualquier input
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: name === 'currentBalance' ||
-                    name === 'monthlyAmount' ||
-                    name === 'generatedInterest' ||
-                    name === 'interestRate' ||
-                    name === 'associateId' ||
-                    name === 'savingTypeId'
-                ? parseFloat(value)
-                : value,
+            [name]:
+                name === 'currentBalance' ||
+                name === 'monthlyAmount' ||
+                name === 'generatedInterest' ||
+                name === 'interestRate' ||
+                name === 'associateId' ||
+                name === 'savingTypeId'
+                    ? parseFloat(value)
+                    : value,
         }));
     };
 
-    // Guardar
+    // Guardar cambios
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onCreate?.(formData);
+        onSave(formData);
         onClose();
     };
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-white/10 z-50">
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-white/30 z-50">
             <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6">
-                <h2 className="text-lg font-semibold text-center mb-4 text-[#1F2937]">Iniciar ahorro personal</h2>
+                <h2 className="text-lg font-semibold text-center mb-4 text-[#1F2937]">
+                    Editar Ahorro
+                </h2>
 
-                <form className="space-y-4" onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className="space-y-4">
                     <input
                         name="associateId"
                         type="number"
@@ -107,17 +118,21 @@ export default function CreateSavingModal({ show, onClose, onCreate }: Props) {
                         name="interestRate"
                         type="number"
                         placeholder="Tasa de Interés (%)"
+                        step="0.01"
                         value={formData.interestRate ?? ''}
                         onChange={handleChange}
                         required
-                        step="0.01"
                         className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
                     />
 
                     <input
                         name="deadline"
                         type="date"
-                        value={formData.deadline ? new Date(formData.deadline).toISOString().split('T')[0] : ''}
+                        value={
+                            formData.deadline
+                                ? new Date(formData.deadline).toISOString().split('T')[0]
+                                : ''
+                        }
                         onChange={(e) =>
                             setFormData((prev) => ({
                                 ...prev,
@@ -140,7 +155,7 @@ export default function CreateSavingModal({ show, onClose, onCreate }: Props) {
                             type="submit"
                             className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition"
                         >
-                            Crear
+                            Guardar
                         </button>
                     </div>
                 </form>

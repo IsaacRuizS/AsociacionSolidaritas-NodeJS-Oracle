@@ -1,7 +1,7 @@
 import { CreditModel } from '@/app/shared/model/creditModel';
 
 export async function getCredits(): Promise<CreditModel[]> {
-    const response = await fetch('/api/credits', {
+    const response = await fetch('/api/credit', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     });

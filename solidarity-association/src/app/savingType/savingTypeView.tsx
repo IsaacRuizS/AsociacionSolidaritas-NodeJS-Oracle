@@ -7,6 +7,7 @@ import { mdiPencil, mdiTrashCan, mdiPlusCircleOutline } from '@mdi/js';
 import CreateSavingTypeModal from './modals/createSavingTypeModal';
 import EditSavingTypeModal from './modals/editSavingTypeModal';
 import ConfirmDeleteModal from '@/app/shared/components/confirmDeleteModal';
+import { SavingTypeModel } from '@/app/shared/model/savingModel';
 
 export default function SavingTypeView() {
     const {
@@ -48,14 +49,14 @@ export default function SavingTypeView() {
                         </tr>
                     </thead>
                     <tbody>
-                        {types.map((t) => (
+                        {types.map((t: SavingTypeModel) => (
                             <tr key={t.savingTypeId} className="hover:bg-gray-50 border-t border-gray-200">
                                 <td className="px-4 py-3 text-center">{t.savingTypeId?.toString().padStart(2, '0')}</td>
                                 <td className="px-4 py-3 text-center font-medium">{t.name}</td>
                                 <td className="px-4 py-3 text-center">{t.description}</td>
                                 <td className="px-4 py-3 text-center">
                                     <div className="flex justify-center items-center gap-2">
-                                        <div onClick={() => handleEditClick(t.savingTypeId!, t.name!, t.description!)}>
+                                        <div onClick={() => handleEditClick(t)}>
                                             <Icon path={mdiPencil} size={1} />
                                         </div>
                                         <div onClick={() => handleDeleteClick(t.savingTypeId!)}>
@@ -72,13 +73,15 @@ export default function SavingTypeView() {
             <CreateSavingTypeModal
                 show={showCreateModal}
                 onClose={() => setShowCreateModal(false)}
-                onCreate={handleCreateType}
+                onCreate={(data) =>
+                    handleCreateType(data)
+                }
             />
             <EditSavingTypeModal
                 show={showEditModal}
                 currentEdit={selectedEdit}
                 onClose={() => setShowEditModal(false)}
-                onSave={handleSaveEdit}
+                onSave={(updated) => handleSaveEdit(updated)}
             />
             <ConfirmDeleteModal
                 show={showDeleteModal}
