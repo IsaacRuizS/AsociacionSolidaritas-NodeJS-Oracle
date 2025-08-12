@@ -48,19 +48,19 @@ export default function RoleView() {
                         </tr>
                     </thead>
                     <tbody>
-                        {roles.map((r) => (
-                            <tr key={r.roleId} className="hover:bg-gray-50 border-t border-gray-200">
+                        {roles.map((r, index) => (
+                            <tr key={r.roleId ?? index} className="hover:bg-gray-50 border-t border-gray-200">
                                 <td className="px-4 py-3 text-center">{r.roleId?.toString().padStart(2, '0')}</td>
                                 <td className="px-4 py-3 text-center font-medium">{r.name}</td>
                                 <td className="px-4 py-3 text-center">{r.description}</td>
                                 <td className="px-4 py-3 text-center">
                                     <div className="flex justify-center items-center gap-2">
-                                        <div onClick={() => handleEditClick(r.roleId!, r.name!, r.description!)}>
+                                        <button type="button" onClick={() => handleEditClick(r.roleId!)}>
                                             <Icon path={mdiPencil} size={1} />
-                                        </div>
-                                        <div onClick={() => handleDeleteClick(r.roleId!)}>
+                                        </button>
+                                        <button type="button" onClick={() => handleDeleteClick(r.roleId!)}>
                                             <Icon path={mdiTrashCan} size={1} />
-                                        </div>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -74,12 +74,14 @@ export default function RoleView() {
                 onClose={() => setShowCreateModal(false)}
                 onCreate={handleCreateRole}
             />
+
             <EditRoleModal
                 show={showEditModal}
                 currentEdit={selectedEdit}
                 onClose={() => setShowEditModal(false)}
                 onSave={handleSaveEdit}
             />
+
             <ConfirmDeleteModal
                 show={showDeleteModal}
                 onClose={() => setShowDeleteModal(false)}

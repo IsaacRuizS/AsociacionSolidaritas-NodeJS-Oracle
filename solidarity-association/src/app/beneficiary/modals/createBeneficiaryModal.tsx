@@ -1,35 +1,40 @@
 'use client';
 
+import { AssociateModel } from '@/app/shared/model/associateModel';
+
 type Props = {
     show: boolean;
+    associates: AssociateModel[]; // lista de asociados para el select
     onClose: () => void;
     onCreate?: (data: {
+        associateId: number;
         firstName: string;
         lastName1: string;
         lastName2: string;
-        nationalId: string;
+        email: string;
         phone: string;
         relationship: string;
         percentage: number;
     }) => void;
 };
 
-export default function CreateBeneficiaryModal({ show, onClose, onCreate }: Props) {
+export default function CreateBeneficiaryModal({ show, associates, onClose, onCreate }: Props) {
     if (!show) return null;
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const form = e.target as HTMLFormElement;
 
+        const associateId = parseInt((form.elements.namedItem('associateId') as HTMLSelectElement).value, 10);
         const firstName = (form.elements.namedItem('firstName') as HTMLInputElement).value;
         const lastName1 = (form.elements.namedItem('lastName1') as HTMLInputElement).value;
         const lastName2 = (form.elements.namedItem('lastName2') as HTMLInputElement).value;
-        const nationalId = (form.elements.namedItem('nationalId') as HTMLInputElement).value;
+        const email = (form.elements.namedItem('email') as HTMLInputElement).value;
         const phone = (form.elements.namedItem('phone') as HTMLInputElement).value;
         const relationship = (form.elements.namedItem('relationship') as HTMLInputElement).value;
         const percentage = parseFloat((form.elements.namedItem('percentage') as HTMLInputElement).value);
 
-        onCreate?.({ firstName, lastName1, lastName2, nationalId, phone, relationship, percentage });
+        onCreate?.({ associateId, firstName, lastName1, lastName2, email, phone, relationship, percentage });
         onClose();
     };
 
@@ -39,6 +44,20 @@ export default function CreateBeneficiaryModal({ show, onClose, onCreate }: Prop
                 <h2 className="text-lg font-semibold text-center mb-4 text-[#1F2937]">Registrar beneficiario</h2>
 
                 <form className="space-y-4" onSubmit={handleSubmit}>
+                    {/* Selector de Asociado */}
+                    <select
+                        name="associateId"
+                        required
+                        className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
+                    >
+                        <option value="">Seleccione un asociado</option>
+                        {associates.map((a) => (
+                            <option key={a.associateId} value={a.associateId}>
+                                {`${a.firstName ?? ''} ${a.lastName1 ?? ''} ${a.lastName2 ?? ''}`}
+                            </option>
+                        ))}
+                    </select>
+
                     <input
                         name="firstName"
                         type="text"
@@ -60,9 +79,9 @@ export default function CreateBeneficiaryModal({ show, onClose, onCreate }: Prop
                         className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
                     />
                     <input
-                        name="nationalId"
-                        type="text"
-                        placeholder="Cédula"
+                        name="email"
+                        type="email"
+                        placeholder="Correo electrónico"
                         required
                         className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
                     />

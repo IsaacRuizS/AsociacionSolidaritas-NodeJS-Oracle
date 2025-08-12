@@ -1,34 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BeneficiaryModel } from '@/app/shared/model/beneficiaryModel';
-import {createBeneficiary,updateBeneficiary,deleteBeneficiary } from '@/app/shared/services/beneficiaryService';    
-
-const mockData: BeneficiaryModel[] = [
-    new BeneficiaryModel({
-        beneficiaryId: 1,
-        nationalId: '3-3333-3333',
-        firstName: 'Carlos',
-        lastName1: 'Gómez',
-        lastName2: 'Rodríguez',
-        phone: '8888-1234',
-        relationship: 'Hijo',
-        percentage: 50,
-    }),
-    new BeneficiaryModel({
-        beneficiaryId: 2,
-        nationalId: '4-4444-4444',
-        firstName: 'María',
-        lastName1: 'Fernández',
-        lastName2: 'Jiménez',
-        phone: '8999-5678',
-        relationship: 'Esposa',
-        percentage: 50,
-    }),
-];
+import {createBeneficiary,updateBeneficiary,deleteBeneficiary, getBeneficiaries } from '@/app/shared/services/beneficiaryService';    
+import { AssociateModel } from '../shared/model/associateModel';
+import { getAssociates } from '../shared/services/associateService';
 
 export function useBeneficiary() {
-    const [beneficiaries, setBeneficiaries] = useState<BeneficiaryModel[]>(mockData);
+
+    const [beneficiaries, setBeneficiaries] = useState<BeneficiaryModel[]>([]);
+    const [associates, setAssociates] = useState<AssociateModel[]>([]);// para la relacion de asociado-beneficiario
+    
 
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -37,10 +19,33 @@ export function useBeneficiary() {
     const [selectedBeneficiary, setSelectedBeneficiary] = useState<BeneficiaryModel | null>(null);
     const [beneficiaryToDelete, setBeneficiaryToDelete] = useState<number | null>(null);
 
+    useEffect(() => {
+    
+        const fetchBeneficiaries = async () => {
+        
+            try {
+        
+                const data = await getBeneficiaries();
+                setBeneficiaries(data);
+
+                const associates = await getAssociates();
+                setAssociates(associates);
+
+            } catch (err: any) {
+                console.error(err);
+            } 
+        };
+
+        fetchBeneficiaries();
+    }, []);
+
     const handleCreateBeneficiary = async (data: BeneficiaryModel) => {
         const created = await createBeneficiary(data);
         setBeneficiaries((prev) => [...prev, new BeneficiaryModel(created)]);
         setShowCreateModal(false);
+
+        const newData = await getBeneficiaries();
+        setBeneficiaries(newData);
     };
 
     const handleEditClick = (beneficiaryId: number) => {
@@ -59,6 +64,9 @@ export function useBeneficiary() {
             )
         );
         setShowEditModal(false);
+
+        const newData = await getBeneficiaries();
+        setBeneficiaries(newData);
     };
 
     const handleDeleteClick = (beneficiaryId: number) => {
@@ -77,6 +85,7 @@ export function useBeneficiary() {
 
     return {
         beneficiaries,
+        associates,
         showCreateModal,
         setShowCreateModal,
         showEditModal,

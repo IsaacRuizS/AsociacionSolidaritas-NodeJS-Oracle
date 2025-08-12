@@ -1,7 +1,7 @@
 import { RoleModel } from '@/app/shared/model/roleModel';
 
 export async function getRoles(): Promise<RoleModel[]> {
-    const response = await fetch('/api/roles', {
+    const response = await fetch('/api/role', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     });

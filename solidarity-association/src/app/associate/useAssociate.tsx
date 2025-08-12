@@ -35,6 +35,7 @@ export function useAssociate() {
         const created = await createAssociate(data);
         setAssociates((prev) => [...prev, new AssociateModel(created)]);
         setShowCreateModal(false);
+        
         const newData = await getAssociates();
         setAssociates(newData);
     };
@@ -66,11 +67,14 @@ export function useAssociate() {
     };
 
     const handleConfirmDelete = async () => {
+
         if (associateToDelete !== null) {
+
             await deleteAssociate(associateToDelete);
             setAssociates((prev) => prev.filter((a) => a.associateId !== associateToDelete));
             setAssociateToDelete(null);
         }
+        
         setShowDeleteModal(false);
     };
 

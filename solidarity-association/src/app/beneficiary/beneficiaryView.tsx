@@ -11,6 +11,7 @@ import ConfirmDeleteModal from '@/app/shared/components/confirmDeleteModal';
 export default function BeneficiaryView() {
     const {
         beneficiaries,
+        associates,
         showCreateModal,
         setShowCreateModal,
         showEditModal,
@@ -45,7 +46,7 @@ export default function BeneficiaryView() {
                         <tr>
                             <th className="px-4 py-3 text-center">ID</th>
                             <th className="px-4 py-3 text-center">Nombre completo</th>
-                            <th className="px-4 py-3 text-center">Cédula</th>
+                            <th className="px-4 py-3 text-center">Asociado</th>
                             <th className="px-4 py-3 text-center">Parentesco</th>
                             <th className="px-4 py-3 text-center">Teléfono</th>
                             <th className="px-4 py-3 text-center">Porcentaje</th>
@@ -53,13 +54,19 @@ export default function BeneficiaryView() {
                         </tr>
                     </thead>
                     <tbody>
-                        {beneficiaries.map((b) => (
-                            <tr key={b.beneficiaryId} className="hover:bg-gray-50 border-t border-gray-200">
+                        {beneficiaries.map((b, index) => (
+                            <tr key={b.beneficiaryId ?? index} className="hover:bg-gray-50 border-t border-gray-200">
                                 <td className="px-4 py-3 text-center">{b.beneficiaryId?.toString().padStart(2, '0')}</td>
                                 <td className="px-4 py-3 text-center font-medium">
                                     {`${b.firstName ?? ''} ${b.lastName1 ?? ''} ${b.lastName2 ?? ''}`}
                                 </td>
-                                <td className="px-4 py-3 text-center">{b.nationalId}</td>
+                                <td className="px-4 py-3 text-center">
+                                    {
+                                        associates.find(a => a.associateId === b.associateId)
+                                            ? `${associates.find(a => a.associateId === b.associateId)?.firstName ?? ''} ${associates.find(a => a.associateId === b.associateId)?.lastName1 ?? ''} ${associates.find(a => a.associateId === b.associateId)?.lastName2 ?? ''}`
+                                            : b.associateId
+                                    }
+                                </td>
                                 <td className="px-4 py-3 text-center">{b.relationship}</td>
                                 <td className="px-4 py-3 text-center">{b.phone}</td>
                                 <td className="px-4 py-3 text-center">{b.percentage}%</td>
@@ -84,12 +91,14 @@ export default function BeneficiaryView() {
                 show={showCreateModal}
                 onClose={() => setShowCreateModal(false)}
                 onCreate={handleCreateBeneficiary}
+                associates={associates}
             />
             <EditBeneficiaryModal
                 show={showEditModal}
                 currentData={selectedBeneficiary}
                 onClose={() => setShowEditModal(false)}
                 onSave={handleSaveEdit}
+                associates={associates}
             />
             <ConfirmDeleteModal
                 show={showDeleteModal}

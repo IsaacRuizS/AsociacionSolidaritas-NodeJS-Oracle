@@ -6,8 +6,8 @@ export class BeneficiaryModel {
             this.associateId = init.ASSOCIATE_ID;
             this.email = init.EMAIL;
             this.firstName = init.FIRST_NAME;
-            this.lastName1 = init.LAST_NAME1;
-            this.lastName2 = init.LAST_NAME2;
+            this.lastName1 = init.LAST_NAME_1;
+            this.lastName2 = init.LAST_NAME_2;
             this.nationalId = init.NATIONAL_ID;
             this.gender = init.GENDER;
             this.relationship = init.RELATIONSHIP;

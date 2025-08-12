@@ -2,36 +2,43 @@
 
 import { useEffect, useState } from 'react';
 import { BeneficiaryModel } from '@/app/shared/model/beneficiaryModel';
+import { AssociateModel } from '@/app/shared/model/associateModel';
 
 type Props = {
     show: boolean;
+    associates: AssociateModel[];
     currentData: BeneficiaryModel | null;
     onClose: () => void;
     onSave: (updated: BeneficiaryModel) => void;
 };
 
-export default function EditBeneficiaryModal({ show, currentData, onClose, onSave }: Props) {
+export default function EditBeneficiaryModal({ show, associates, currentData, onClose, onSave }: Props) {
+    
     const [formData, setFormData] = useState<BeneficiaryModel>(new BeneficiaryModel());
 
+    //precargar la data
     useEffect(() => {
         if (currentData) {
-            setFormData(new BeneficiaryModel(currentData));
+            setFormData(currentData);
         }
     }, [currentData]);
 
+    // Mostrar el modal si hay datos actuales
     if (!show || !currentData) return null;
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Mostrar el modal si hay datos actuales
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
         const { name, value } = e.target;
-
         setFormData((prev) => ({
             ...prev,
             [name]:
                 name === 'percentage' ? parseFloat(value) :
+                name === 'associateId' ? parseInt(value, 10) :
                 value,
         }));
     };
 
+    // Manejar el envío del formulario
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onSave(formData);
@@ -44,6 +51,22 @@ export default function EditBeneficiaryModal({ show, currentData, onClose, onSav
                 <h2 className="text-lg font-semibold text-center mb-4 text-[#1F2937]">Editar beneficiario</h2>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* Selector de asociado */}
+                    <select
+                        name="associateId"
+                        value={formData.associateId ?? ''}
+                        onChange={handleChange}
+                        required
+                        className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
+                    >
+                        <option value="">Seleccione un asociado</option>
+                        {associates.map((a) => (
+                            <option key={a.associateId} value={a.associateId}>
+                                {`${a.firstName ?? ''} ${a.lastName1 ?? ''} ${a.lastName2 ?? ''}`}
+                            </option>
+                        ))}
+                    </select>
+
                     <input
                         name="firstName"
                         type="text"
@@ -71,10 +94,10 @@ export default function EditBeneficiaryModal({ show, currentData, onClose, onSav
                         className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
                     />
                     <input
-                        name="nationalId"
-                        type="text"
-                        placeholder="Cédula"
-                        value={formData.nationalId ?? ''}
+                        name="email"
+                        type="email"
+                        placeholder="Correo electrónico"
+                        value={formData.email ?? ''}
                         onChange={handleChange}
                         required
                         className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
