@@ -9,7 +9,6 @@ export async function getAssociates(): Promise<AssociateModel[]> {
     if (!response.ok) throw new Error('Error fetching associates');
 
     const data = await response.json();
-    console.log(data)
     return data.map((item: any) => new AssociateModel(item));
 }
 

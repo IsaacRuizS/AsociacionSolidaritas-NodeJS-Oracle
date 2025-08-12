@@ -22,8 +22,7 @@ export function useAssociate() {
             try {
         
                 const data = await getAssociates();
-                console.log(data, 'a');
-                setAssociates(data.map((a: any) => new AssociateModel(a)));
+                setAssociates(data);
         
             } catch (err: any) {
                 console.error(err);
@@ -36,9 +35,12 @@ export function useAssociate() {
         const created = await createAssociate(data);
         setAssociates((prev) => [...prev, new AssociateModel(created)]);
         setShowCreateModal(false);
+        const newData = await getAssociates();
+        setAssociates(newData);
     };
 
     const handleEditClick = (associateId: number) => {
+        
         const found = associates.find((a) => a.associateId === associateId);
         if (found) {
             setSelectedAssociate(found);
@@ -47,11 +49,15 @@ export function useAssociate() {
     };
 
     const handleSaveEdit = async (updatedData: AssociateModel) => {
+
         const updated = await updateAssociate(updatedData);
         setAssociates((prev) =>
             prev.map((a) => (a.associateId === updated.associateId ? new AssociateModel(updated) : a))
         );
         setShowEditModal(false);
+        
+        const newData = await getAssociates();
+        setAssociates(newData);
     };
 
     const handleDeleteClick = (associateId: number) => {

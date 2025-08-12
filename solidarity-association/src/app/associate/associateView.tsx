@@ -47,20 +47,22 @@ export default function AssociateView() {
                             <th className="px-4 py-3 text-center">Nombre completo</th>
                             <th className="px-4 py-3 text-center">Correo</th>
                             <th className="px-4 py-3 text-center">Teléfono</th>
+                            <th className="px-4 py-3 text-center">Cédula</th>
                             <th className="px-4 py-3 text-center">Fecha ingreso</th>
                             <th className="px-4 py-3 text-center">Salario bruto</th>
                             <th className="px-4 py-3 text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {associates.map((a) => (
-                            <tr key={a.associateId} className="hover:bg-gray-50 border-t border-gray-200">
+                        {associates.map((a, index) => (
+                            <tr key={a.associateId ?? index} className="hover:bg-gray-50 border-t border-gray-200">
                                 <td className="px-4 py-3 text-center">{a.associateId?.toString().padStart(2, '0')}</td>
                                 <td className="px-4 py-3 text-center font-medium">
                                     {`${a.firstName ?? ''} ${a.lastName1 ?? ''} ${a.lastName2 ?? ''}`}
                                 </td>
                                 <td className="px-4 py-3 text-center">{a.email}</td>
                                 <td className="px-4 py-3 text-center">{a.phone}</td>
+                                <td className="px-4 py-3 text-center">{a.nationalId}</td>
                                 <td className="px-4 py-3 text-center">
                                     {a.entryDate?.toLocaleDateString('es-CR')}
                                 </td>

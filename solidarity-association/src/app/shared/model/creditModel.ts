@@ -1,14 +1,31 @@
+export class LaborConditionModel {
+
+    constructor(init?: any) {
+        if (init) {
+            this.conditionId = init.CONDITION_ID;
+            this.description = init.DESCRIPTION;
+        }
+    }
+
+    conditionId?: number;
+    description?: string;
+}
+
 export class CreditModel {
 
-    constructor(init?: Partial<Pick<CreditModel, keyof CreditModel>>) {
+    constructor(init?: any) {
         if (init) {
-            if (typeof init.requestDate === 'string') {
-                init.requestDate = new Date(init.requestDate);
-            }
-            if (typeof init.approvalDate === 'string') {
-                init.approvalDate = new Date(init.approvalDate);
-            }
-            Object.assign(this, init);
+            this.creditId = init.CREDIT_ID;
+            this.associateId = init.ASSOCIATE_ID;
+            this.creditStatusId = init.CREDIT_STATUS_ID;
+            this.name = init.NAME;
+            this.requestedAmount = init.REQUESTED_AMOUNT;
+            this.termMonths = init.TERM_MONTHS;
+            this.currentBalance = init.CURRENT_BALANCE;
+            this.monthlyPayment = init.MONTHLY_PAYMENT;
+            this.interestRate = init.INTEREST_RATE;
+            this.requestDate = typeof init.REQUEST_DATE === 'string' ? new Date(init.REQUEST_DATE) : init.REQUEST_DATE;
+            this.approvalDate = typeof init.APPROVAL_DATE === 'string' ? new Date(init.APPROVAL_DATE) : init.APPROVAL_DATE;
         }
     }
 
@@ -27,9 +44,10 @@ export class CreditModel {
 
 export class CreditStatusModel {
 
-    constructor(init?: Partial<Pick<CreditStatusModel, keyof CreditStatusModel>>) {
+    constructor(init?: any) {
         if (init) {
-            Object.assign(this, init);
+            this.statusId = init.STATUS_ID;
+            this.description = init.DESCRIPTION;
         }
     }
 
@@ -39,12 +57,12 @@ export class CreditStatusModel {
 
 export class CreditContributionModel {
 
-    constructor(init?: Partial<Pick<CreditContributionModel, keyof CreditContributionModel>>) {
+    constructor(init?: any) {
         if (init) {
-            if (typeof init.date === 'string') {
-                init.date = new Date(init.date);
-            }
-            Object.assign(this, init);
+            this.contributionId = init.CONTRIBUTION_ID;
+            this.creditId = init.CREDIT_ID;
+            this.amount = init.AMOUNT;
+            this.date = typeof init.DATE === 'string' ? new Date(init.DATE) : init.DATE;
         }
     }
 
@@ -53,5 +71,3 @@ export class CreditContributionModel {
     amount?: number;
     date?: Date;
 }
-
-

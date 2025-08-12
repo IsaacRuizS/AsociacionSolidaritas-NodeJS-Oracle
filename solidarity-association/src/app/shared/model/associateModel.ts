@@ -1,14 +1,27 @@
 export class AssociateModel {
 
-    constructor(init?: Partial<Pick<AssociateModel, keyof AssociateModel>>) {
+    constructor(init?: any) {
         if (init) {
-            if (typeof init.birthDate === 'string') {
-                init.birthDate = new Date(init.birthDate);
-            }
-            if (typeof init.entryDate === 'string') {
-                init.entryDate = new Date(init.entryDate);
-            }
-            Object.assign(this, init);
+            this.associateId = init.ASSOCIATE_ID;
+            this.roleId = init.ROLE_ID;
+            this.laborConditionId = init.LABOR_CONDITION_ID;
+            this.nationalId = init.NATIONAL_ID;
+            this.firstName = init.FIRST_NAME;
+            this.lastName1 = init.LAST_NAME_1;
+            this.lastName2 = init.LAST_NAME_2;
+            this.province = init.PROVINCE;
+            this.canton = init.CANTON;
+            this.district = init.DISTRICT;
+            this.birthDate = init.BIRTH_DATE ? new Date(init.BIRTH_DATE) : undefined;
+            this.maritalStatus = init.MARITAL_STATUS;
+            this.gender = init.GENDER;
+            this.profession = init.PROFESSION;
+            this.entryDate = init.ENTRY_DATE ? new Date(init.ENTRY_DATE) : init.ENTRY_DATE;
+            this.grossSalary = init.GROSS_SALARY;
+            this.company = init.COMPANY;
+            this.email = init.EMAIL;
+            this.password = init.PASSWORD;
+            this.phone = init.PHONE;
         }
     }
 

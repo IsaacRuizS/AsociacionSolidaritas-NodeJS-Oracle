@@ -29,7 +29,9 @@ export class SavingTypeModel {
 
     constructor(init?: any) {
         if (init) {
-            Object.assign(this, init);
+            this.savingTypeId = init.SAVING_TYPE_ID;
+            this.name = init.NAME;
+            this.description = init.DESCRIPTION;
         }
     }
 
@@ -40,12 +42,12 @@ export class SavingTypeModel {
 
 export class SavingContributionModel {
 
-    constructor(init?: Partial<Pick<SavingContributionModel, keyof SavingContributionModel>>) {
+    constructor(init?: any) {
         if (init) {
-            if (typeof init.date === 'string') {
-                init.date = new Date(init.date);
-            }
-            Object.assign(this, init);
+            this.contributionId = init.CONTRIBUTION_ID;
+            this.savingId = init.SAVING_ID;
+            this.amount = init.AMOUNT;
+            this.date = init.DATE ? new Date(init.DATE) : undefined;
         }
     }
 
@@ -58,12 +60,12 @@ export class SavingContributionModel {
 
 export class WithdrawalModel {
 
-    constructor(init?: Partial<Pick<WithdrawalModel, keyof WithdrawalModel>>) {
+    constructor(init?: any) {
         if (init) {
-            if (typeof init.date === 'string') {
-                init.date = new Date(init.date);
-            }
-            Object.assign(this, init);
+            this.withdrawalId = init.WITHDRAWAL_ID;
+            this.savingId = init.SAVING_ID;
+            this.amount = init.AMOUNT;
+            this.date = init.DATE ? new Date(init.DATE) : undefined;
         }
     }
 

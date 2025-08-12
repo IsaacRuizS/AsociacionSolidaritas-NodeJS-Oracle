@@ -1,8 +1,10 @@
 export class RoleModel {
 
-    constructor(init?: Partial<Pick<RoleModel, keyof RoleModel>>) {
+    constructor(init?: any) {
         if (init) {
-            Object.assign(this, init);
+            this.roleId = init.ROLE_ID;
+            this.name = init.NAME;
+            this.description = init.DESCRIPTION;
         }
     }
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { AssociateModel } from '@/app/shared/model/associateModel';
+import { formatDateForInput } from '@/app/shared/helper';
 
 type Props = {
     show: boolean;
@@ -11,27 +12,32 @@ type Props = {
 };
 
 export default function EditAssociateModal({ show, currentData, onClose, onSave }: Props) {
+    
     const [formData, setFormData] = useState<AssociateModel>(new AssociateModel());
 
+    //cargar datos actuales en el formulario
     useEffect(() => {
         if (currentData) {
-            setFormData(new AssociateModel(currentData));
+            setFormData(currentData);
         }
     }, [currentData]);
 
+    //si no se muestra o no traer data, no lo mostramos
     if (!show || !currentData) return null;
 
+    //cambiar el estado del formulario
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
 
         setFormData((prev) => ({
             ...prev,
             [name]: name === 'grossSalary' ? parseFloat(value) :
-                    name === 'entryDate' ? new Date(value) :
+                    name === 'entryDate' ? new Date(`${value}T00:00:00`) :
                     value,
         }));
     };
 
+    //manejar el envío del formulario
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onSave(formData);
@@ -91,7 +97,7 @@ export default function EditAssociateModal({ show, currentData, onClose, onSave 
                     <input
                         name="entryDate"
                         type="date"
-                        value={formData.entryDate ? formData.entryDate.toISOString().split('T')[0] : ''}
+                        value={formatDateForInput(formData.entryDate as any)}
                         onChange={handleChange}
                         required
                         className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"

@@ -7,7 +7,7 @@ import Icon from '@mdi/react';
 import {mdiPiggyBank,mdiBank,mdiAccountGroup,mdiAccountPlus} from '@mdi/js';
 
 const navItems = [
-    { label: 'Usuarios', href: '/associate', icon: mdiAccountGroup },
+    { label: 'Asociados', href: '/associate', icon: mdiAccountGroup },
     { label: 'Beneficiarios', href: '/beneficiary', icon: mdiAccountGroup },
     { label: 'Roles', href: '/role', icon: mdiAccountGroup },
     { label: 'Condicion laboral', href: '/laborCondition', icon: mdiAccountGroup },

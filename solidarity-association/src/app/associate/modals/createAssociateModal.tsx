@@ -4,6 +4,7 @@ type Props = {
     show: boolean;
     onClose: () => void;
     onCreate?: (data: {
+        nationalId: string;
         firstName: string;
         lastName1: string;
         lastName2: string;
@@ -21,6 +22,7 @@ export default function CreateAssociateModal({ show, onClose, onCreate }: Props)
         e.preventDefault();
         const form = e.target as HTMLFormElement;
 
+        const nationalId = (form.elements.namedItem('nationalId') as HTMLInputElement).value;
         const firstName = (form.elements.namedItem('firstName') as HTMLInputElement).value;
         const lastName1 = (form.elements.namedItem('lastName1') as HTMLInputElement).value;
         const lastName2 = (form.elements.namedItem('lastName2') as HTMLInputElement).value;
@@ -29,7 +31,7 @@ export default function CreateAssociateModal({ show, onClose, onCreate }: Props)
         const entryDate = new Date((form.elements.namedItem('entryDate') as HTMLInputElement).value);
         const grossSalary = parseFloat((form.elements.namedItem('grossSalary') as HTMLInputElement).value);
 
-        onCreate?.({ firstName, lastName1, lastName2, email, phone, entryDate, grossSalary });
+        onCreate?.({ nationalId, firstName, lastName1, lastName2, email, phone, entryDate, grossSalary });
         onClose();
     };
 
@@ -39,6 +41,13 @@ export default function CreateAssociateModal({ show, onClose, onCreate }: Props)
                 <h2 className="text-lg font-semibold text-center mb-4 text-[#1F2937]">Registrar asociado</h2>
 
                 <form className="space-y-4" onSubmit={handleSubmit}>
+                    <input
+                        name="nationalId"
+                        type="text"
+                        placeholder="Identificación"
+                        required
+                        className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
+                    />
                     <input
                         name="firstName"
                         type="text"
