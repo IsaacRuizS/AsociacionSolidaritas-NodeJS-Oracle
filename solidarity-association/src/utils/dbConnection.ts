@@ -29,10 +29,20 @@ export async function runQuery(script: string, binds = {}) {
 
         if (hasCursor) {
             const resultSet = (result.outBinds as any).cursor;
-            const rows = await resultSet.getRows(1000);
+            const rowsRaw = await resultSet.getRows(1000);
+            const meta = resultSet.metaData.map((col: any) => col.name);
             await resultSet.close();
+
+            const rows = rowsRaw.map((row: any[]) =>
+                meta.reduce((acc: Record<string, any>, colName: string, idx: number) => {
+                acc[colName] = row[idx];
+                return acc;
+                }, {} as Record<string, any>)
+            );
+
             return rows;
         }
+
 
         return result;
     } catch (error) {
