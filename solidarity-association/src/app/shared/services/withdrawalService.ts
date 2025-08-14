@@ -1,7 +1,7 @@
 import { WithdrawalModel } from '@/app/shared/model/savingModel';
 
 export async function getWithdrawals(): Promise<WithdrawalModel[]> {
-    const response = await fetch('/api/withdrawals', {
+    const response = await fetch('/api/withdrawal', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     });
@@ -12,7 +12,7 @@ export async function getWithdrawals(): Promise<WithdrawalModel[]> {
 }
 
 export async function createWithdrawal(withdrawal: WithdrawalModel) {
-    const response = await fetch('/api/withdrawals/create', {
+    const response = await fetch('/api/withdrawal', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(withdrawal),
@@ -23,8 +23,8 @@ export async function createWithdrawal(withdrawal: WithdrawalModel) {
 }
 
 export async function updateWithdrawal(withdrawal: WithdrawalModel) {
-    const response = await fetch(`/api/withdrawals/${withdrawal.withdrawalId}`, {
-        method: 'PUT',
+    const response = await fetch(`/api/withdrawal`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(withdrawal),
     });
@@ -34,8 +34,10 @@ export async function updateWithdrawal(withdrawal: WithdrawalModel) {
 }
 
 export async function deleteWithdrawal(withdrawalId: number) {
-    const response = await fetch(`/api/withdrawals/${withdrawalId}`, {
+    const response = await fetch(`/api/withdrawal`, {
         method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ withdrawalId })
     });
 
     if (!response.ok) throw new Error('Error al eliminar el retiro');
