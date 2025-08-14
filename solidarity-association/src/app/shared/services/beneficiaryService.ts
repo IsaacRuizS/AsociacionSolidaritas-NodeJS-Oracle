@@ -34,8 +34,12 @@ export async function updateBeneficiary(beneficiary: BeneficiaryModel) {
 }
 
 export async function deleteBeneficiary(beneficiaryId: number) {
-    const response = await fetch(`/api/beneficiary/${beneficiaryId}`, {
+    const response = await fetch(`/api/beneficiary`, {
         method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ beneficiaryId })
     });
 
     if (!response.ok) throw new Error('Error al eliminar el beneficiario');

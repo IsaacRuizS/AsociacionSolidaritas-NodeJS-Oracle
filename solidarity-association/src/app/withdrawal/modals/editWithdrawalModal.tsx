@@ -76,28 +76,6 @@ export default function EditWithdrawalModal({
                             className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
                         />
                     </div>
-                    <div>
-                        <label className="text-sm text-gray-700 mb-1 block">Fecha</label>
-                        <input
-                            name="date"
-                            type="date"
-                            value={
-                                formData.date
-                                    ? formData.date.toISOString().split('T')[0]
-                                    : ''
-                            }
-                            onChange={(e) =>
-                                setFormData((prev) => ({
-                                    ...prev,
-                                    date: e.target.value
-                                        ? new Date(e.target.value)
-                                        : undefined,
-                                }))
-                            }
-                            required
-                            className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
-                        />
-                    </div>
 
                     <div className="flex justify-between gap-4 mt-6">
                         <button

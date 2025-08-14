@@ -34,8 +34,14 @@ export async function updateLaborCondition(condition: LaborConditionModel) {
 }
 
 export async function deleteLaborCondition(conditionId: number) {
-    const response = await fetch(`/api/laborCondition/${conditionId}`, {
+    const response = await fetch(`/api/laborCondition`, {
         method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            conditionId: conditionId
+        })
     });
 
     if (!response.ok) throw new Error('Error al eliminar la condición laboral');

@@ -1,50 +1,62 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { SavingModel } from '@/app/shared/model/savingModel';
+import { SavingModel, SavingTypeModel } from '@/app/shared/model/savingModel';
+import { AssociateModel } from '@/app/shared/model/associateModel';
 
 type Props = {
     show: boolean;
     currentEdit: SavingModel | null;
+    associates: AssociateModel[];
+    types: SavingTypeModel[];
     onClose: () => void;
     onSave: (updated: SavingModel) => void;
 };
 
-export default function EditSavingModal({ show, currentEdit, onClose, onSave }: Props) {
+export default function EditSavingModal({
+    show,
+    currentEdit,
+    associates,
+    types,
+    onClose,
+    onSave
+}: Props) {
     const [formData, setFormData] = useState<SavingModel>(new SavingModel());
 
-    // Precargar datos cuando cambie el registro a editar
     useEffect(() => {
-        if (currentEdit) {
-            setFormData(currentEdit);
-        }
+        if (currentEdit) setFormData(currentEdit);
     }, [currentEdit]);
 
     if (!show || !currentEdit) return null;
 
-    // Manejar cambios en cualquier input
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
+
         setFormData((prev) => ({
             ...prev,
             [name]:
-                name === 'currentBalance' ||
-                name === 'monthlyAmount' ||
-                name === 'generatedInterest' ||
-                name === 'interestRate' ||
-                name === 'associateId' ||
-                name === 'savingTypeId'
-                    ? parseFloat(value)
-                    : value,
+                name === 'associateId' || name === 'savingTypeId'
+                    ? (value ? parseInt(value, 10) : (undefined as any))
+                    : name === 'currentBalance' ||
+                        name === 'monthlyAmount' ||
+                        name === 'generatedInterest' ||
+                        name === 'interestRate'
+                        ? (value === '' ? (undefined as any) : parseFloat(value))
+                        : value,
         }));
     };
 
-    // Guardar cambios
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onSave(formData);
         onClose();
     };
+
+    const fmtDate = (d?: Date | string) =>
+        d ? new Date(d).toISOString().split('T')[0] : '';
+
+    const associateLabel = (a: AssociateModel) =>
+        [a.firstName, a.lastName1, a.lastName2].filter(Boolean).join(' ');
 
     return (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-white/30 z-50">
@@ -54,25 +66,37 @@ export default function EditSavingModal({ show, currentEdit, onClose, onSave }: 
                 </h2>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <input
+                    {/* SELECT Asociado */}
+                    <select
                         name="associateId"
-                        type="number"
-                        placeholder="ID Asociado"
                         value={formData.associateId ?? ''}
                         onChange={handleChange}
                         required
                         className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
-                    />
+                    >
+                        <option value="" disabled>Seleccione un asociado</option>
+                        {associates.map((a) => (
+                            <option key={a.associateId} value={a.associateId}>
+                                {associateLabel(a)}
+                            </option>
+                        ))}
+                    </select>
 
-                    <input
+                    {/* SELECT Tipo de Ahorro */}
+                    <select
                         name="savingTypeId"
-                        type="number"
-                        placeholder="ID Tipo de Ahorro"
                         value={formData.savingTypeId ?? ''}
                         onChange={handleChange}
                         required
                         className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
-                    />
+                    >
+                        <option value="" disabled>Seleccione un tipo de ahorro</option>
+                        {types.map((t) => (
+                            <option key={t.savingTypeId} value={t.savingTypeId}>
+                                {t.name}
+                            </option>
+                        ))}
+                    </select>
 
                     <input
                         name="name"
@@ -128,11 +152,7 @@ export default function EditSavingModal({ show, currentEdit, onClose, onSave }: 
                     <input
                         name="deadline"
                         type="date"
-                        value={
-                            formData.deadline
-                                ? new Date(formData.deadline).toISOString().split('T')[0]
-                                : ''
-                        }
+                        value={fmtDate(formData.deadline)}
                         onChange={(e) =>
                             setFormData((prev) => ({
                                 ...prev,

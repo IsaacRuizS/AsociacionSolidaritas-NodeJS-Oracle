@@ -1,67 +1,85 @@
 'use client';
 
 import { useState } from 'react';
-import { SavingModel } from '@/app/shared/model/savingModel';
+import { SavingModel, SavingTypeModel } from '@/app/shared/model/savingModel';
+import { AssociateModel } from '@/app/shared/model/associateModel';
 
 type Props = {
     show: boolean;
+    associates: AssociateModel[];
+    types: SavingTypeModel[];
     onClose: () => void;
     onCreate?: (data: SavingModel) => void;
 };
 
-export default function CreateSavingModal({ show, onClose, onCreate }: Props) {
+export default function CreateSavingModal({ show, associates, types, onClose, onCreate }: Props) {
     const [formData, setFormData] = useState<SavingModel>(new SavingModel());
-
     if (!show) return null;
 
-    // Manejar cambios en inputs
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: name === 'currentBalance' ||
-                    name === 'monthlyAmount' ||
-                    name === 'generatedInterest' ||
-                    name === 'interestRate' ||
-                    name === 'associateId' ||
-                    name === 'savingTypeId'
-                ? parseFloat(value)
-                : value,
+            [name]:
+                name === 'associateId' || name === 'savingTypeId'
+                    ? (value ? parseInt(value, 10) : (undefined as any))
+                    : name === 'currentBalance' ||
+                        name === 'monthlyAmount' ||
+                        name === 'generatedInterest' ||
+                        name === 'interestRate'
+                        ? (value === '' ? (undefined as any) : parseFloat(value))
+                        : value,
         }));
     };
 
-    // Guardar
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onCreate?.(formData);
         onClose();
     };
 
+    const associateLabel = (a: AssociateModel) =>
+        [a.firstName, a.lastName1, a.lastName2].filter(Boolean).join(' ');
+
     return (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-white/10 z-50">
             <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6">
-                <h2 className="text-lg font-semibold text-center mb-4 text-[#1F2937]">Iniciar ahorro personal</h2>
+                <h2 className="text-lg font-semibold text-center mb-4 text-[#1F2937]">
+                    Iniciar ahorro personal
+                </h2>
 
                 <form className="space-y-4" onSubmit={handleSubmit}>
-                    <input
+                    {/* SELECT Asociado */}
+                    <select
                         name="associateId"
-                        type="number"
-                        placeholder="ID Asociado"
                         value={formData.associateId ?? ''}
                         onChange={handleChange}
                         required
                         className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
-                    />
+                    >
+                        <option value="" disabled>Seleccione un asociado</option>
+                        {associates.map((a) => (
+                            <option key={a.associateId} value={a.associateId}>
+                                {associateLabel(a)}
+                            </option>
+                        ))}
+                    </select>
 
-                    <input
+                    {/* SELECT Tipo de Ahorro */}
+                    <select
                         name="savingTypeId"
-                        type="number"
-                        placeholder="ID Tipo de Ahorro"
                         value={formData.savingTypeId ?? ''}
                         onChange={handleChange}
                         required
                         className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
-                    />
+                    >
+                        <option value="" disabled>Seleccione un tipo de ahorro</option>
+                        {types.map((t) => (
+                            <option key={t.savingTypeId} value={t.savingTypeId}>
+                                {t.name}
+                            </option>
+                        ))}
+                    </select>
 
                     <input
                         name="name"
@@ -107,10 +125,10 @@ export default function CreateSavingModal({ show, onClose, onCreate }: Props) {
                         name="interestRate"
                         type="number"
                         placeholder="Tasa de Interés (%)"
+                        step="0.01"
                         value={formData.interestRate ?? ''}
                         onChange={handleChange}
                         required
-                        step="0.01"
                         className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
                     />
 

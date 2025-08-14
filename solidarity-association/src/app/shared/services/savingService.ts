@@ -13,9 +13,6 @@ export async function getSavings(): Promise<SavingModel[]> {
 }
 
 export async function createSaving(saving: SavingModel) {
-    console.log('aaaaaaaaaaaaaaaaaaaaaaa', JSON.stringify(saving))
-    console.log('aaaaaaaaaaaaaaaaaaaaaaa', saving)
-    console.log('bbbbbbbbbbbbbbbbbbbbbb')
     const response = await fetch('/api/saving', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -38,9 +35,10 @@ export async function updateSaving(saving: SavingModel) {
 }
 
 export async function deleteSaving(savingId: number) {
-    const response = await fetch(`/api/saving/${savingId}`, {
+    const response = await fetch(`/api/saving`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ savingId })
     });
 
     if (!response.ok) throw new Error('Error al eliminar el ahorro');

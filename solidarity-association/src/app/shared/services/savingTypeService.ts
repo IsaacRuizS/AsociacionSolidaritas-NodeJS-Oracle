@@ -34,8 +34,10 @@ export async function updateSavingType(type: SavingTypeModel) {
 }
 
 export async function deleteSavingType(typeId: number) {
-    const response = await fetch(`/api/savingType/${typeId}`, {
+    const response = await fetch(`/api/savingType`, {
         method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ typeId })
     });
 
     if (!response.ok) throw new Error('Error al eliminar el tipo de ahorro');

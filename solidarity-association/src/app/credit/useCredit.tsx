@@ -68,20 +68,18 @@ export function useCredit() {
 
     // Guardar edición
     const handleSaveEdit = async (updated: CreditModel) => {
+        await updateCredit(updated);
         setShowEditModal(false);
-        if (creditToAction !== null) {
-            await updateCredit(updated);
-            setCredits((prev) =>
-                prev.map((c) => c.creditId === updated.creditId ? updated : c)
-            );
-        }
+        const data = await getCredits();
+        setCredits(data);
     };
 
     // Crear nuevo
     const handleCreateCredit = async (newCredit: CreditModel) => {
-        const saved = await createCredit(newCredit);
-        setCredits((prev) => [...prev, new CreditModel(saved)]);
+        const saved = await createCredit(newCredit); 
         setShowCreateModal(false);
+        const data = await getCredits();
+        setCredits(data);
     };
 
     return {

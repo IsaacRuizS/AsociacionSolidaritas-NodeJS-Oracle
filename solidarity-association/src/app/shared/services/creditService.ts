@@ -34,8 +34,12 @@ export async function updateCredit(credit: CreditModel) {
 }
 
 export async function deleteCredit(creditId: number) {
-    const response = await fetch(`/api/credit/${creditId}`, {
+    const response = await fetch(`/api/credit`, {
         method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ creditId })
     });
 
     if (!response.ok) throw new Error('Error al eliminar el crédito');

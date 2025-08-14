@@ -55,12 +55,14 @@ export default function CreditView() {
                             <th className="px-4 py-3 text-center">Saldo Actual</th>
                             <th className="px-4 py-3 text-center">Fecha Solicitud</th>
                             <th className="px-4 py-3 text-center">Fecha Aprobación</th>
+                            <th className="px-4 py-3 text-center">Estado</th>
+                            <th className="px-4 py-3 text-center">Asociado</th>
                             <th className="px-4 py-3 text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {credits.map((c) => (
-                            <tr key={c.creditId} className="hover:bg-gray-50 border-t border-gray-200">
+                        {credits.map((c, index) => (
+                            <tr key={index} className="hover:bg-gray-50 border-t border-gray-200">
                                 <td className="px-4 py-3 text-center">{c.creditId}</td>
                                 <td className="px-4 py-3 text-center">{c.name}</td>
                                 <td className="px-4 py-3 text-center">{c.requestedAmount?.toLocaleString()}</td>
@@ -69,6 +71,17 @@ export default function CreditView() {
                                 <td className="px-4 py-3 text-center">{c.currentBalance?.toLocaleString()}</td>
                                 <td className="px-4 py-3 text-center">{c.requestDate ? new Date(c.requestDate).toLocaleDateString() : ''}</td>
                                 <td className="px-4 py-3 text-center">{c.approvalDate ? new Date(c.approvalDate).toLocaleDateString() : ''}</td>
+                                <td className="px-4 py-3 text-center">
+                                    {c.creditStatusId ? statuses.find(s => s.statusId === c.creditStatusId)?.description : 'N/A'}
+                                </td>
+                                <td className="px-4 py-3 text-center">
+                                    {(() => {
+                                        const associate = c.associateId && associates.find((a) => a.associateId === c.associateId);
+                                        return associate
+                                            ? `${associate.firstName ?? ''} ${associate.lastName1 ?? ''} ${associate.lastName2 ?? ''}`.trim()
+                                            : '';
+                                    })()}
+                                </td>
                                 <td className="px-4 py-3 text-center">
                                     <div className="flex justify-center items-center gap-2">
                                         <div onClick={() => handleEditClick(c)} className="cursor-pointer">

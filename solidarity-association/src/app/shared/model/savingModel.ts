@@ -65,7 +65,7 @@ export class WithdrawalModel {
             this.withdrawalId = init.WITHDRAWAL_ID;
             this.savingId = init.SAVING_ID;
             this.amount = init.AMOUNT;
-            this.date = init.DATE ? new Date(init.DATE) : undefined;
+            this.date = init.DATE_WITHDRAWAL ? new Date(init.DATE_WITHDRAWAL) : undefined;
         }
     }
 

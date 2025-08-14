@@ -1,11 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { SavingModel } from '@/app/shared/model/savingModel';
+import { SavingModel, SavingTypeModel } from '@/app/shared/model/savingModel';
 import { getSavings, createSaving, deleteSaving, updateSaving } from '../shared/services/savingService';
+import { AssociateModel } from '../shared/model/associateModel';
+import { getAssociates } from '../shared/services/associateService';
+import { getSavingTypes } from '../shared/services/savingTypeService';
 
 export function useSaving() {
     const [savings, setSavings] = useState<SavingModel[]>([]);
+    const [types, setTypes] = useState<SavingTypeModel[]>([]);
+    const [associates, setAssociates] = useState<AssociateModel[]>([]);
 
     // Modales
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -20,6 +25,13 @@ export function useSaving() {
             try {
                 const data = await getSavings();
                 setSavings(data);
+
+                const typesData = await getSavingTypes();
+                setTypes(typesData);
+
+                const associatesData = await getAssociates();
+                setAssociates(associatesData);
+
             } catch (err: any) {
                 console.error(err);
             }
@@ -71,6 +83,8 @@ export function useSaving() {
 
     return {
         savings,
+        types,
+        associates,
         showCreateModal,
         setShowCreateModal,
         showEditModal,

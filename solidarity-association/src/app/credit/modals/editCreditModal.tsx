@@ -44,7 +44,7 @@ export default function EditCreditModal({
                     ? parseInt(value, 10)
                 : name === 'requestedAmount' || name === 'currentBalance' || name === 'monthlyPayment' || name === 'interestRate'
                     ? parseFloat(value)
-                : name === 'requestDate' || name === 'approvalDate'
+                : name === 'approvalDate'
                     ? (value ? new Date(value) : undefined)
                 : value
         }));
@@ -101,7 +101,7 @@ export default function EditCreditModal({
                     <input name="currentBalance" type="number" step="0.01" placeholder="Saldo Actual" value={formData.currentBalance ?? ''} onChange={handleChange} required className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none" />
                     <input name="monthlyPayment" type="number" step="0.01" placeholder="Cuota Mensual" value={formData.monthlyPayment ?? ''} onChange={handleChange} required className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none" />
                     <input name="interestRate" type="number" step="0.01" placeholder="Tasa de Interés (%)" value={formData.interestRate ?? ''} onChange={handleChange} required className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none" />
-                    <input name="requestDate" type="date" placeholder="Fecha Solicitud" value={formData.requestDate ? formData.requestDate.toISOString().split('T')[0] : ''} onChange={handleChange} required className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none" />
+                    <label htmlFor="approvalDate">Fecha Aprobación</label>
                     <input name="approvalDate" type="date" placeholder="Fecha Aprobación" value={formData.approvalDate ? formData.approvalDate.toISOString().split('T')[0] : ''} onChange={handleChange} className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none" />
 
                     <div className="flex justify-between gap-4 mt-6">

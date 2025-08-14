@@ -11,6 +11,8 @@ import ConfirmDeleteModal from '@/app/shared/components/confirmDeleteModal';
 export default function SavingView() {
     const {
         savings,
+        types,
+        associates,
         showCreateModal,
         setShowCreateModal,
         showEditModal,
@@ -50,6 +52,8 @@ export default function SavingView() {
                             <th className="px-4 py-3 text-center">Tasa interés</th>
                             <th className="px-4 py-3 text-center">Interés generado</th>
                             <th className="px-4 py-3 text-center">Plazo</th>
+                            <th className="px-4 py-3 text-center">Tipo</th>
+                            <th className="px-4 py-3 text-center">Asociado</th>
                             <th className="px-4 py-3 text-center">Acciones</th>
                         </tr>
                     </thead>
@@ -77,6 +81,17 @@ export default function SavingView() {
                                         : ''}
                                 </td>
                                 <td className="px-4 py-3 text-center">
+                                    {s.savingTypeId && types.find((t) => t.savingTypeId === s.savingTypeId)?.name}
+                                </td>
+                                <td className="px-4 py-3 text-center">
+                                    {(() => {
+                                        const associate = s.associateId && associates.find((a) => a.associateId === s.associateId);
+                                        return associate
+                                            ? `${associate.firstName ?? ''} ${associate.lastName1 ?? ''} ${associate.lastName2 ?? ''}`.trim()
+                                            : '';
+                                    })()}
+                                </td>
+                                <td className="px-4 py-3 text-center">
                                     <div className="flex justify-center items-center gap-2">
                                         <button
                                             type="button"
@@ -101,12 +116,16 @@ export default function SavingView() {
             {/* Modales */}
             <CreateSavingModal
                 show={showCreateModal}
+                types={types}
+                associates={associates}
                 onClose={() => setShowCreateModal(false)}
                 onCreate={handleCreateSaving}
             />
 
             <EditSavingModal
                 show={showEditModal}
+                types={types}
+                associates={associates}
                 currentEdit={selectedEdit}
                 onClose={() => setShowEditModal(false)}
                 onSave={handleSaveEdit}

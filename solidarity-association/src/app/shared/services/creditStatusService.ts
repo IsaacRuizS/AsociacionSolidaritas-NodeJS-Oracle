@@ -34,8 +34,12 @@ export async function updateCreditStatus(status: CreditStatusModel) {
 }
 
 export async function deleteCreditStatus(statusId: number) {
-    const response = await fetch(`/api/creditStatus/${statusId}`, {
+    const response = await fetch(`/api/creditStatus`, {
         method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ statusId })
     });
 
     if (!response.ok) throw new Error('Error al eliminar el estado de crédito');
