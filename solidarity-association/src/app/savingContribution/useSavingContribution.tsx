@@ -25,6 +25,7 @@ export function useSavingContribution() {
             try {
                 const data = await getSavingContributions();
                 setContributions(data);
+                console.log('Contributions loaded:', data);
             } catch (err) {
                 console.error(err);
             }
