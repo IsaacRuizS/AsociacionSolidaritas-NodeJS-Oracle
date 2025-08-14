@@ -47,7 +47,7 @@ export class SavingContributionModel {
             this.contributionId = init.CONTRIBUTION_ID;
             this.savingId = init.SAVING_ID;
             this.amount = init.AMOUNT;
-            this.date = init.DATE ? new Date(init.DATE) : undefined;
+            this.date = init.DATE_SAVING_CONTRIBUTION ? new Date(init.DATE_SAVING_CONTRIBUTION) : undefined;
         }
     }
 

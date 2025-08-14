@@ -34,39 +34,93 @@ async function getSavingContribution(req: NextApiRequest, res: NextApiResponse) 
         return res.status(200).json(rows);
 
     } catch (err: any) {
-        
-        console.error('Error fetching contributions:', err);
+
         return res.status(500).json({ error: err.message });
     }
 }
 
 async function postSavingContribution(req: NextApiRequest, res: NextApiResponse) {
-    const nuevaContribucion = req.body;
-    const result = await runQuery('BEGIN SP_CREATE_SAVING_CONTRIBUTION(:SAVING_ID, :AMOUNT, :DATE_SAVING_CONTRIBUTION); END;', {
-        SAVING_ID: { val: nuevaContribucion.savingId, type: oracledb.NUMBER },
-        AMOUNT: { val: nuevaContribucion.amount, type: oracledb.NUMBER },
-        DATE_SAVING_CONTRIBUTION: { val: nuevaContribucion.dateSavingContribution, type: oracledb.DATE },
-    });
+    try {
+        const nuevaContribucion = req.body;
 
-    console.log(result);
-    return res.status(201).json({ message: 'Contribución de ahorro creada', data: nuevaContribucion });
+        const result = await runQuery(
+            `BEGIN
+                PKG_SAVING_CONTRIBUTION.insert_contribution(:SAVING_ID, :AMOUNT, :DATE_SAVING_CONTRIBUTION);
+            END;`,
+            {
+                SAVING_ID: { val: nuevaContribucion.savingId, type: oracledb.NUMBER },
+                AMOUNT: { val: nuevaContribucion.amount, type: oracledb.NUMBER },
+                DATE_SAVING_CONTRIBUTION: { val: new Date(nuevaContribucion.dateSavingContribution), type: oracledb.DATE }
+            }
+        );
+
+        return res.status(201).json({message: 'Aporte de ahorro creada', data: nuevaContribucion});
+        
+    } catch (err: any) {
+
+        return res.status(500).json({ error: err.message });
+    }
 }
 
 async function patchSavingContribution(req: NextApiRequest, res: NextApiResponse) {
-    const contribucionActualizar = req.body;
-    const result = await runQuery('BEGIN SP_UPDATE_SAVING_CONTRIBUTION(:CONTRIBUTION_ID, :SAVING_ID, :AMOUNT, :DATE_SAVING_CONTRIBUTION); END;', {
-        CONTRIBUTION_ID: { val: contribucionActualizar.contributionId, type: oracledb.NUMBER },
-        SAVING_ID: { val: contribucionActualizar.savingId, type: oracledb.NUMBER },
-        AMOUNT: { val: contribucionActualizar.amount, type: oracledb.NUMBER },
-        DATE_SAVING_CONTRIBUTION: { val: contribucionActualizar.dateSavingContribution, type: oracledb.DATE },
-    });
-    return res.status(200).json({ message: 'Contribución de ahorro actualizada', data: contribucionActualizar });
+    try {
+
+        const contribucionActualizar = req.body;
+
+        const result = await runQuery(
+        `BEGIN
+            PKG_SAVING_CONTRIBUTION.update_contribution(
+            :CONTRIBUTION_ID,
+            :SAVING_ID,
+            :AMOUNT,
+            :DATE_SAVING_CONTRIBUTION
+            );
+        END;`,
+        {
+            CONTRIBUTION_ID: { val: contribucionActualizar.contributionId, type: oracledb.NUMBER },
+            SAVING_ID: { val: contribucionActualizar.savingId, type: oracledb.NUMBER },
+            AMOUNT: { val: contribucionActualizar.amount, type: oracledb.NUMBER },
+            DATE_SAVING_CONTRIBUTION: { val: new Date(contribucionActualizar.dateSavingContribution), type: oracledb.DATE }
+        }
+        );
+
+        return res.status(200).json({
+            message: 'Aporte de ahorro actualizada',
+            data: contribucionActualizar
+        });
+
+    } catch (err: any) {
+
+        return res.status(500).json({ error: err.message });
+    }
 }
 
 async function deleteSavingContribution(req: NextApiRequest, res: NextApiResponse) {
-    const contributionId = req.query.contributionId;
-    const result = await runQuery('BEGIN SP_DELETE_SAVING_CONTRIBUTION(:CONTRIBUTION_ID); END;', {
-        CONTRIBUTION_ID: { val: contributionId, type: oracledb.NUMBER },
-    });
-    return res.status(200).json({ message: 'Contribución de ahorro eliminada' });
+    try {
+
+        const { contributionId } = req.body;
+
+        if (!contributionId) {
+            
+            return res.status(400).json({ error: 'contributionId is required' });
+        }   
+
+        await runQuery(
+                `BEGIN
+                    PKG_SAVING_CONTRIBUTION.delete_contribution(:CONTRIBUTION_ID);
+                END;`,
+                {
+                    CONTRIBUTION_ID: { val: contributionId, type: oracledb.NUMBER }
+                }
+            );
+
+            return res.status(200).json({
+                message: 'Aporte de ahorro eliminada',
+                id: contributionId
+            });
+        
+    } catch (err: any) {
+
+        return res.status(500).json({ error: err.message });
+    }
 }

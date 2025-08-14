@@ -33,6 +33,7 @@ export async function runQuery(script: string, binds = {}) {
             const meta = resultSet.metaData.map((col: any) => col.name);
             await resultSet.close();
 
+            //set the column name to the value
             const rows = rowsRaw.map((row: any[]) =>
                 meta.reduce((acc: Record<string, any>, colName: string, idx: number) => {
                 acc[colName] = row[idx];

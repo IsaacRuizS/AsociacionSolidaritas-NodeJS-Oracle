@@ -36,8 +36,10 @@ export async function updateSavingContribution(contribution: SavingContributionM
 }
 
 export async function deleteSavingContribution(contributionId: number) {
-    const response = await fetch(`/api/savingContribution/${contributionId}`, {
+    const response = await fetch(`/api/savingContribution`, {
         method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contributionId })
     });
 
     if (!response.ok) throw new Error('Error al eliminar el aporte');
