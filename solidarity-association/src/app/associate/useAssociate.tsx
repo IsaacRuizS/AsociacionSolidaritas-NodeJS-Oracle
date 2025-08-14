@@ -3,10 +3,17 @@
 import { useEffect, useState } from 'react';
 import { AssociateModel } from '@/app/shared/model/associateModel';
 import { createAssociate, updateAssociate, deleteAssociate, getAssociates } from '@/app/shared/services/associateService';
+import { RoleModel } from '../shared/model/roleModel';
+import { getRoles } from '../shared/services/roleService';
+import { LaborConditionModel } from '../shared/model/creditModel';
+import { getLaborConditions } from '../shared/services/laborConditionService';
 
 export function useAssociate() {
 
     const [associates, setAssociates] = useState<AssociateModel[]>([]);
+    const [roles, setRoles] = useState<RoleModel[]>([]);
+    const [conditions, setConditions] = useState<LaborConditionModel[]>([]);
+    
 
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -23,6 +30,12 @@ export function useAssociate() {
         
                 const data = await getAssociates();
                 setAssociates(data);
+
+                const roles = await getRoles();
+                setRoles(roles);
+
+                const laborCondition = await getLaborConditions();
+                setConditions(laborCondition);
         
             } catch (err: any) {
                 console.error(err);
@@ -51,6 +64,7 @@ export function useAssociate() {
 
     const handleSaveEdit = async (updatedData: AssociateModel) => {
 
+        console.log(updatedData);
         const updated = await updateAssociate(updatedData);
         setAssociates((prev) =>
             prev.map((a) => (a.associateId === updated.associateId ? new AssociateModel(updated) : a))
@@ -80,6 +94,8 @@ export function useAssociate() {
 
     return {
         associates,
+        roles,
+        conditions,
         showCreateModal,
         setShowCreateModal,
         showEditModal,

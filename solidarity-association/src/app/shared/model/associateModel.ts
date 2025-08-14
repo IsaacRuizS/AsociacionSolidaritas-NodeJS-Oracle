@@ -4,7 +4,7 @@ export class AssociateModel {
         if (init) {
             this.associateId = init.ASSOCIATE_ID;
             this.roleId = init.ROLE_ID;
-            this.laborConditionId = init.LABOR_CONDITION_ID;
+            this.laborConditionId = init.LABORCONDITION_ID;
             this.nationalId = init.NATIONAL_ID;
             this.firstName = init.FIRST_NAME;
             this.lastName1 = init.LAST_NAME_1;

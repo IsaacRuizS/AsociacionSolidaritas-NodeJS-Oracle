@@ -1,4 +1,6 @@
+
 import { runQuery } from '@/utils/dbConnection';
+import { toOracleJsDate } from '@/utils/helper';
 import oracledb from 'oracledb';
 
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -45,16 +47,29 @@ async function postAssociate(req: NextApiRequest, res: NextApiResponse) {
 
         const result = await runQuery(
             `BEGIN
-                PKG_ASSOCIATE_CRUD.create_associate(:FIRST_NAME, :LAST_NAME_1, :LAST_NAME_2, :NATIONAL_ID, :EMAIL, :PHONE, :GROSS_SALARY);
+                PKG_ASSOCIATE_CRUD.create_associate(
+                :P_FIRST_NAME, 
+                :P_LAST_NAME_1, 
+                :P_LAST_NAME_2, 
+                :P_NATIONAL_ID, 
+                :P_EMAIL, 
+                :P_PHONE, 
+                :P_GROSS_SALARY,
+                :P_ID_ROLE,
+                :P_ENTRY_DATE,
+                :P_LABORCONDITION_ID);
             END;`,
             {
-                FIRST_NAME: { val: nuevoAsociado.firstName, type: oracledb.STRING },
-                LAST_NAME_1: { val: nuevoAsociado.lastName1, type: oracledb.STRING },
-                LAST_NAME_2: { val: nuevoAsociado.lastName2, type: oracledb.STRING },
-                NATIONAL_ID: { val: nuevoAsociado.nationalId, type: oracledb.STRING },
-                EMAIL: { val: nuevoAsociado.email, type: oracledb.STRING },
-                PHONE: { val: nuevoAsociado.phone, type: oracledb.STRING },
-                GROSS_SALARY: { val: nuevoAsociado.grossSalary, type: oracledb.NUMBER }
+                P_FIRST_NAME: { val: nuevoAsociado.firstName, type: oracledb.STRING },
+                P_LAST_NAME_1: { val: nuevoAsociado.lastName1, type: oracledb.STRING },
+                P_LAST_NAME_2: { val: nuevoAsociado.lastName2, type: oracledb.STRING },
+                P_NATIONAL_ID: { val: nuevoAsociado.nationalId, type: oracledb.STRING },
+                P_EMAIL: { val: nuevoAsociado.email, type: oracledb.STRING },
+                P_PHONE: { val: nuevoAsociado.phone, type: oracledb.STRING },
+                P_GROSS_SALARY: { val: nuevoAsociado.grossSalary, type: oracledb.NUMBER },
+                P_ID_ROLE: { val: nuevoAsociado.roleId, type: oracledb.NUMBER },
+                P_ENTRY_DATE: { val: toOracleJsDate(nuevoAsociado.entryDate), type: oracledb.DATE },
+                P_LABORCONDITION_ID: { val: nuevoAsociado.laborConditionId, type: oracledb.NUMBER }
             }
         );
 
@@ -72,28 +87,34 @@ async function patchAssociate(req: NextApiRequest, res: NextApiResponse) {
         const asociadoActualizar = req.body;
 
         const result = await runQuery(
-        `BEGIN
-            PKG_ASSOCIATE_CRUD.update_associate(
-            :ID,
-            :FIRST_NAME,
-            :LAST_NAME_1,
-            :LAST_NAME_2,
-            :NATIONAL_ID,
-            :EMAIL,
-            :PHONE,
-            :GROSS_SALARY
-            );
-        END;`,
-        {
-            ID: { val: asociadoActualizar.id, type: oracledb.NUMBER },
-            FIRST_NAME: { val: asociadoActualizar.firstName, type: oracledb.STRING },
-            LAST_NAME_1: { val: asociadoActualizar.lastName1, type: oracledb.STRING },
-            LAST_NAME_2: { val: asociadoActualizar.lastName2, type: oracledb.STRING },
-            NATIONAL_ID: { val: asociadoActualizar.nationalId, type: oracledb.STRING },
-            EMAIL: { val: asociadoActualizar.email, type: oracledb.STRING },
-            PHONE: { val: asociadoActualizar.phone, type: oracledb.STRING },
-            GROSS_SALARY: { val: asociadoActualizar.grossSalary, type: oracledb.NUMBER }
-        }
+            `BEGIN
+                PKG_ASSOCIATE_CRUD.update_associate(
+                :P_ID,
+                :P_FIRST_NAME,
+                :P_LAST_NAME_1,
+                :P_LAST_NAME_2,
+                :P_NATIONAL_ID,
+                :P_EMAIL,
+                :P_PHONE,
+                :P_GROSS_SALARY,
+                :P_ID_ROLE,
+                :P_ENTRY_DATE,
+                :P_LABORCONDITION_ID
+                );
+            END;`,
+            {
+                P_ID: { val: asociadoActualizar.associateId, type: oracledb.NUMBER },
+                P_FIRST_NAME: { val: asociadoActualizar.firstName, type: oracledb.STRING },
+                P_LAST_NAME_1: { val: asociadoActualizar.lastName1, type: oracledb.STRING },
+                P_LAST_NAME_2: { val: asociadoActualizar.lastName2, type: oracledb.STRING },
+                P_NATIONAL_ID: { val: asociadoActualizar.nationalId, type: oracledb.STRING },
+                P_EMAIL: { val: asociadoActualizar.email, type: oracledb.STRING },
+                P_PHONE: { val: asociadoActualizar.phone, type: oracledb.STRING },
+                P_GROSS_SALARY: { val: asociadoActualizar.grossSalary, type: oracledb.NUMBER },
+                P_ID_ROLE: { val: asociadoActualizar.roleId, type: oracledb.NUMBER },
+                P_ENTRY_DATE: { val: toOracleJsDate(asociadoActualizar.entryDate), type: oracledb.DATE },
+                P_LABORCONDITION_ID: { val: asociadoActualizar.laborConditionId, type: oracledb.NUMBER }
+            }
         );
 
         return res.status(200).json({
@@ -102,7 +123,7 @@ async function patchAssociate(req: NextApiRequest, res: NextApiResponse) {
         });
 
     } catch (err: any) {
-
+        console.error(err);
         return res.status(500).json({ error: err.message });
     }
 }
@@ -117,22 +138,23 @@ async function deleteAssociate(req: NextApiRequest, res: NextApiResponse) {
             return res.status(400).json({ error: 'associateId is required' });
         }   
 
-        await runQuery(
-                `BEGIN
-                    PKG_ASSOCIATE_CRUD.delete_associate(:ID);
-                END;`,
-                {
-                    ID: { val: associateId, type: oracledb.NUMBER }
-                }
-            );
+        let result = await runQuery(
+            `BEGIN
+                PKG_ASSOCIATE_CRUD.delete_associate(:P_ID);
+            END;`,
+            {
+                P_ID: { val: associateId, type: oracledb.NUMBER }
+            }
+        );
 
-            return res.status(200).json({
-                message: 'Asociado eliminado',
-                id: associateId
-            });
+        return res.status(200).json({
+            message: 'Asociado eliminado',
+            id: associateId
+        });
         
     } catch (err: any) {
 
+        console.error(err);
         return res.status(500).json({ error: err.message });
     }
 }

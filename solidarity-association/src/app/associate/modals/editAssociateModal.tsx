@@ -2,42 +2,42 @@
 
 import { useEffect, useState } from 'react';
 import { AssociateModel } from '@/app/shared/model/associateModel';
-import { formatDateForInput } from '@/app/shared/helper';
+import { formatDateForInput } from '@/app/shared/helper'; 
+import { RoleModel } from '@/app/shared/model/roleModel';
+import { LaborConditionModel } from '@/app/shared/model/laborConditionModel';
 
 type Props = {
     show: boolean;
+    roles: RoleModel[];
+    conditions: LaborConditionModel[];
     currentData: AssociateModel | null;
     onClose: () => void;
     onSave: (updated: AssociateModel) => void;
 };
 
-export default function EditAssociateModal({ show, currentData, onClose, onSave }: Props) {
-    
+export default function EditAssociateModal({ show, roles, conditions, currentData, onClose, onSave }: Props) {
     const [formData, setFormData] = useState<AssociateModel>(new AssociateModel());
 
-    //cargar datos actuales en el formulario
     useEffect(() => {
-        if (currentData) {
-            setFormData(currentData);
-        }
+        if (currentData) setFormData(currentData);
     }, [currentData]);
 
-    //si no se muestra o no traer data, no lo mostramos
     if (!show || !currentData) return null;
 
-    //cambiar el estado del formulario
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
 
         setFormData((prev) => ({
             ...prev,
-            [name]: name === 'grossSalary' ? parseFloat(value) :
+            [name]:
+                name === 'grossSalary' ? parseFloat(value) :
                     name === 'entryDate' ? new Date(`${value}T00:00:00`) :
-                    value,
+                        name === 'roleId' ? (value ? parseInt(value, 10) : null) :
+                            name === 'laborConditionId' ? (value ? parseInt(value, 10) : null) :
+                            value,
         }));
     };
 
-    //manejar el envío del formulario
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onSave(formData);
@@ -50,6 +50,34 @@ export default function EditAssociateModal({ show, currentData, onClose, onSave 
                 <h2 className="text-lg font-semibold text-center mb-4 text-[#1F2937]">Editar asociado</h2>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* SELECT DE ROLES */}
+                    <select
+                        name="roleId"
+                        value={formData.roleId ?? ''}
+                        onChange={handleChange}
+                        required
+                        className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
+                    >
+                        <option value="" disabled>Seleccione un rol</option>
+                        {roles.map((r) => (
+                            <option key={r.roleId} value={r.roleId}>{r.name}</option>
+                        ))}
+                    </select>
+
+                    {/* SELECT DE CONDICIONES LABORALES */}
+                    <select
+                        name="laborConditionId"
+                        value={formData.laborConditionId ?? ''}
+                        onChange={handleChange}
+                        required
+                        className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
+                    >
+                        <option value="" disabled>Seleccione una condición laboral</option>
+                        {conditions.map((c) => (
+                            <option key={c.conditionId} value={c.conditionId}>{c.description}</option>
+                        ))}
+                    </select>
+
                     <input
                         name="firstName"
                         type="text"
@@ -113,17 +141,10 @@ export default function EditAssociateModal({ show, currentData, onClose, onSave 
                     />
 
                     <div className="flex justify-between gap-4 mt-6">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
-                        >
+                        <button type="button" onClick={onClose} className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition">
                             Cancelar
                         </button>
-                        <button
-                            type="submit"
-                            className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition"
-                        >
+                        <button type="submit" className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
                             Guardar
                         </button>
                     </div>

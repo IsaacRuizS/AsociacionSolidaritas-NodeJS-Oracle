@@ -34,8 +34,14 @@ export async function updateRole(role: RoleModel) {
 }
 
 export async function deleteRole(roleId: number) {
-    const response = await fetch(`/api/role/${roleId}`, {
+    const response = await fetch(`/api/role`, {
         method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            roleId: roleId
+        })
     });
 
     if (!response.ok) throw new Error('Error al eliminar el rol');

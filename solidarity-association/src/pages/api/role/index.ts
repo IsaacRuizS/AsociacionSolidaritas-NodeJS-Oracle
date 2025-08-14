@@ -47,9 +47,11 @@ async function patchRole(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function deleteRole(req: NextApiRequest, res: NextApiResponse) {
-  const roleId = req.query.roleId;
+  const { roleId } = req.body;
+
   const result = await runQuery('BEGIN SP_DELETE_ROLE(:P_ROLE_ID); END;', {
     P_ROLE_ID: { val: roleId, type: oracledb.NUMBER },
   });
+
   return res.status(200).json({ message: 'Rol eliminado' });
 }

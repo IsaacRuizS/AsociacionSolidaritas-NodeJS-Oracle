@@ -44,7 +44,6 @@ export async function runQuery(script: string, binds = {}) {
             return rows;
         }
 
-
         return result;
     } catch (error) {
         console.error('Error ejecutando script:', error);

@@ -28,7 +28,7 @@ export async function updateAssociate(associate: AssociateModel) {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(associate),
-    });
+    }); 
 
     if (!response.ok) throw new Error('Error updating associate');
     return await response.json();

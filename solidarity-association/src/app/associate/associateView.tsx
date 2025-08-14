@@ -11,6 +11,8 @@ import ConfirmDeleteModal from '@/app/shared/components/confirmDeleteModal';
 export default function AssociateView() {
     const {
         associates,
+        roles,
+        conditions,
         showCreateModal,
         setShowCreateModal,
         showEditModal,
@@ -50,12 +52,14 @@ export default function AssociateView() {
                             <th className="px-4 py-3 text-center">Cédula</th>
                             <th className="px-4 py-3 text-center">Fecha ingreso</th>
                             <th className="px-4 py-3 text-center">Salario bruto</th>
+                            <th className="px-4 py-3 text-center">Rol</th>
+                            <th className="px-4 py-3 text-center">Condición laboral</th>
                             <th className="px-4 py-3 text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {associates.map((a, index) => (
-                            <tr key={a.associateId ?? index} className="hover:bg-gray-50 border-t border-gray-200">
+                            <tr key={index} className="hover:bg-gray-50 border-t border-gray-200">
                                 <td className="px-4 py-3 text-center">{a.associateId?.toString().padStart(2, '0')}</td>
                                 <td className="px-4 py-3 text-center font-medium">
                                     {`${a.firstName ?? ''} ${a.lastName1 ?? ''} ${a.lastName2 ?? ''}`}
@@ -68,6 +72,12 @@ export default function AssociateView() {
                                 </td>
                                 <td className="px-4 py-3 text-center">
                                     ₡{a.grossSalary?.toLocaleString('es-CR')}
+                                </td>
+                                <td className="px-4 py-3 text-center">
+                                    {a.roleId ? roles.find(r => r.roleId === a.roleId)?.name : 'N/A'}
+                                </td>
+                                <td className="px-4 py-3 text-center">
+                                    {a.laborConditionId ? conditions.find(c => c.conditionId === a.laborConditionId)?.description : 'N/A'}
                                 </td>
                                 <td className="px-4 py-3 text-center">
                                     <div className="flex justify-center items-center gap-2">
@@ -88,11 +98,15 @@ export default function AssociateView() {
             {/* Modales */}
             <CreateAssociateModal
                 show={showCreateModal}
+                roles={roles}
+                conditions={conditions}
                 onClose={() => setShowCreateModal(false)}
                 onCreate={handleCreateAssociate}
             />
             <EditAssociateModal
                 show={showEditModal}
+                roles={roles}
+                conditions={conditions}
                 currentData={selectedAssociate}
                 onClose={() => setShowEditModal(false)}
                 onSave={handleSaveEdit}
