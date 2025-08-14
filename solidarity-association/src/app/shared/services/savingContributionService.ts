@@ -8,8 +8,6 @@ export async function getSavingContributions(): Promise<SavingContributionModel[
 
     if (!response.ok) throw new Error('Error al obtener los aportes');
     const data = await response.json();
-    console.log('rw:', data);
-    
     return data.map((item: any) => new SavingContributionModel(item));
 }
 

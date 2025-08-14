@@ -50,7 +50,7 @@ async function postSavingContribution(req: NextApiRequest, res: NextApiResponse)
             {
                 SAVING_ID: { val: nuevaContribucion.savingId, type: oracledb.NUMBER },
                 AMOUNT: { val: nuevaContribucion.amount, type: oracledb.NUMBER },
-                DATE_SAVING_CONTRIBUTION: { val: new Date(nuevaContribucion.dateSavingContribution), type: oracledb.DATE }
+                DATE_SAVING_CONTRIBUTION: { val: new Date(nuevaContribucion.date), type: oracledb.DATE }
             }
         );
 
@@ -80,7 +80,7 @@ async function patchSavingContribution(req: NextApiRequest, res: NextApiResponse
             CONTRIBUTION_ID: { val: contribucionActualizar.contributionId, type: oracledb.NUMBER },
             SAVING_ID: { val: contribucionActualizar.savingId, type: oracledb.NUMBER },
             AMOUNT: { val: contribucionActualizar.amount, type: oracledb.NUMBER },
-            DATE_SAVING_CONTRIBUTION: { val: new Date(contribucionActualizar.dateSavingContribution), type: oracledb.DATE }
+            DATE_SAVING_CONTRIBUTION: { val: new Date(contribucionActualizar.date), type: oracledb.DATE }
         }
         );
 
