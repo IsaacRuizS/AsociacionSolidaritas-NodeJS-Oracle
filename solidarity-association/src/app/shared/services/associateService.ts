@@ -35,8 +35,15 @@ export async function updateAssociate(associate: AssociateModel) {
 }
 
 export async function deleteAssociate(associateId: number) {
-    const response = await fetch(`/api/associate/${associateId}`, {
+    console.log(associateId)
+    const response = await fetch(`/api/associate`, {
         method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            associateId: associateId
+        })
     });
 
     if (!response.ok) throw new Error('Error deleting associate');

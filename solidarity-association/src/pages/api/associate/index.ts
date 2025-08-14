@@ -44,6 +44,7 @@ async function postAssociate(req: NextApiRequest, res: NextApiResponse) {
 
 async function patchAssociate(req: NextApiRequest, res: NextApiResponse) {
   const asociadoActualizar = req.body;
+  console.log(req.body)
   const result = await runQuery('BEGIN SP_UPDATE_ASSOCIATE(:P_ID, :P_FIRST_NAME, :P_LAST_NAME_1, :P_LAST_NAME_2, :P_NATIONAL_ID, :P_EMAIL, :P_PHONE, :P_GROSS_SALARY); END;', {
     P_ID: { val: asociadoActualizar.id, type: oracledb.NUMBER },
     P_FIRST_NAME: { val: asociadoActualizar.firstName, type: oracledb.STRING },
@@ -58,9 +59,15 @@ async function patchAssociate(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function deleteAssociate(req: NextApiRequest, res: NextApiResponse) {
-  const associateId = req.query.associateId;
+  const { associateId } = req.body;
+  
+  if (!associateId) {
+    return res.status(400).json({ error: 'associateId is required' });
+  }
+  
   const result = await runQuery('BEGIN SP_DELETE_ASSOCIATE(:P_ID); END;', {
     P_ID: { val: associateId, type: oracledb.NUMBER },
   });
+  
   return res.status(200).json({ message: 'Asociado eliminado' });
 }

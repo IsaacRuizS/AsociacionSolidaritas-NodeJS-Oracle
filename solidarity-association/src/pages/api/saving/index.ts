@@ -9,6 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return await getSaving(req, res);
 
     case 'POST':
+      console.log('holaaaa');
       return await postSaving(req, res);
 
     case 'PATCH':
@@ -28,6 +29,7 @@ async function getSaving(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function postSaving(req: NextApiRequest, res: NextApiResponse) {
+  console.log('testtest')
   const nuevoUsuario = req.body;
   const result = await runQuery('BEGIN SP_CREATE_SAVING(:P_NAME, :P_CURRENT_BALANCE, :P_MONTHLY_AMOUNT, :P_INTEREST_RATE, :P_DEADLINE); END;', {
     P_NAME: { val: nuevoUsuario.name, type: oracledb.STRING },

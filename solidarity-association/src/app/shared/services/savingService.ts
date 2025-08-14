@@ -8,10 +8,14 @@ export async function getSavings(): Promise<SavingModel[]> {
 
     if (!response.ok) throw new Error('Error al obtener los ahorros');
     const data = await response.json();
+    console.log(data)
     return data.map((item: any) => new SavingModel(item));
 }
 
 export async function createSaving(saving: SavingModel) {
+    console.log('aaaaaaaaaaaaaaaaaaaaaaa', JSON.stringify(saving))
+    console.log('aaaaaaaaaaaaaaaaaaaaaaa', saving)
+    console.log('bbbbbbbbbbbbbbbbbbbbbb')
     const response = await fetch('/api/saving', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
