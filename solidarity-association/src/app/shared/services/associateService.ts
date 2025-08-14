@@ -35,7 +35,6 @@ export async function updateAssociate(associate: AssociateModel) {
 }
 
 export async function deleteAssociate(associateId: number) {
-    console.log(associateId)
     const response = await fetch(`/api/associate`, {
         method: 'DELETE',
         headers: {
