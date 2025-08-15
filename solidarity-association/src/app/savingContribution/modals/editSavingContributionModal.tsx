@@ -57,7 +57,7 @@ export default function EditSavingContributionModal({
                     Editar Aporte
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
+                    <div style={{ display: 'none' }}>
                         <label className="text-sm text-gray-700 mb-1 block">
                             ID Ahorro
                         </label>

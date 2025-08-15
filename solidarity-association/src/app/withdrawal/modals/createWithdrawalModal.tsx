@@ -3,13 +3,21 @@
 import { useState } from 'react';
 import { WithdrawalModel } from '@/app/shared/model/savingModel';
 
+import { SavingModel } from '@/app/shared/model/savingModel';
+
 type Props = {
     show: boolean;
+    savings: SavingModel[];
     onClose: () => void;
-    onCreate?: (data: WithdrawalModel) => void;
+    onCreate?: (data: {
+        savingId: number;
+        amount: number;
+        dateWithdrawal: Date;
+    }) => void;
 };
 
-export default function CreateWithdrawalModal({ show, onClose, onCreate }: Props) {
+
+export default function CreateWithdrawalModal({ show, savings, onClose, onCreate }: Props) {
     const [formData, setFormData] = useState<WithdrawalModel>(new WithdrawalModel());
 
     if (!show) return null;
@@ -29,9 +37,13 @@ export default function CreateWithdrawalModal({ show, onClose, onCreate }: Props
     // Guardar retiro
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        const form = e.target as HTMLFormElement;
 
-        formData.date = new Date();
-        onCreate?.(formData);
+        const savingId = parseInt((form.elements.namedItem('savingId') as HTMLSelectElement).value, 10);
+        const amount = parseFloat((form.elements.namedItem('amount') as HTMLInputElement).value);
+        const dateWithdrawal = new Date();
+
+        onCreate?.({ savingId, amount, dateWithdrawal });
         onClose();
     };
 
@@ -43,15 +55,18 @@ export default function CreateWithdrawalModal({ show, onClose, onCreate }: Props
                 </h2>
 
                 <form className="space-y-4" onSubmit={handleSubmit}>
-                    <input
+                    <select
                         name="savingId"
-                        type="number"
-                        placeholder="ID Ahorro"
-                        value={formData.savingId ?? ''}
-                        onChange={handleChange}
                         required
                         className="w-full border rounded-full px-4 py-2 bg-gray-100 outline-none"
-                    />
+                    >
+                        <option value="">Seleccione un ahorro</option>
+                        {savings.map((s) => (
+                            <option key={s.savingId} value={s.savingId}>
+                                {`${s.name ?? ''} - ${s.currentBalance ?? ''}`}
+                            </option>
+                        ))}
+                    </select>
                     <input
                         name="amount"
                         type="number"

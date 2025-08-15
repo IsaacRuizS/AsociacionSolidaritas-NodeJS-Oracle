@@ -1,16 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { WithdrawalModel } from '@/app/shared/model/savingModel';
+import { SavingModel, WithdrawalModel } from '@/app/shared/model/savingModel';
 import {
     createWithdrawal,
     updateWithdrawal,
     deleteWithdrawal,
     getWithdrawals
 } from '@/app/shared/services/withdrawalService';
+import { getSavings } from '@/app/shared/services/savingService';
 
 export function useWithdrawal() {
     const [withdrawals, setWithdrawals] = useState<WithdrawalModel[]>([]);
+    const [savings, setSavings] = useState<SavingModel[]>([]);
 
     // Modales
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -30,6 +32,16 @@ export function useWithdrawal() {
             }
         };
         fetchWithdrawals();
+
+        const fetchSavings = async () => {
+            try {
+                const data = await getSavings();
+                setSavings(data);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        fetchSavings();
     }, []);
 
     // Abrir modal de edición
@@ -76,6 +88,7 @@ export function useWithdrawal() {
 
     return {
         withdrawals,
+        savings,
         showCreateModal,
         setShowCreateModal,
         showEditModal,

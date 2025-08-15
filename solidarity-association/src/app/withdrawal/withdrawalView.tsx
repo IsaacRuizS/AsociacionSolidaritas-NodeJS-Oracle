@@ -11,6 +11,7 @@ import ConfirmDeleteModal from '@/app/shared/components/confirmDeleteModal';
 export default function WithdrawalView() {
     const {
         withdrawals,
+        savings,
         showCreateModal,
         setShowCreateModal,
         showEditModal,
@@ -89,12 +90,14 @@ export default function WithdrawalView() {
             {/* Modales */}
             <CreateWithdrawalModal
                 show={showCreateModal}
+                savings={savings}
                 onClose={() => setShowCreateModal(false)}
                 onCreate={handleCreateWithdrawal}
             />
             <EditWithdrawalModal
                 show={showEditModal}
                 currentEdit={selectedEdit}
+                savings={savings}
                 onClose={() => setShowEditModal(false)}
                 onSave={handleSaveEdit}
             />

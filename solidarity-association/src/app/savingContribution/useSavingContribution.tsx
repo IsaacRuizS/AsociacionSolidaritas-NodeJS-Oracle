@@ -1,16 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { SavingContributionModel } from '@/app/shared/model/savingModel';
+import { SavingContributionModel, SavingModel } from '@/app/shared/model/savingModel';
 import {
     createSavingContribution,
     updateSavingContribution,
     deleteSavingContribution,
     getSavingContributions
 } from '@/app/shared/services/savingContributionService';
+import { getSavings } from '@/app/shared/services/savingService';
 
 export function useSavingContribution() {
     const [contributions, setContributions] = useState<SavingContributionModel[]>([]);
+    const [savings, setSavings] = useState<SavingModel[]>([]);
 
     // Modales
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -30,6 +32,16 @@ export function useSavingContribution() {
             }
         };
         fetchContributions();
+
+        const fetchSavings = async () => {
+            try {
+                const data = await getSavings();
+                setSavings(data);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        fetchSavings();
     }, []);
 
     // Abrir modal de edición
@@ -76,6 +88,7 @@ export function useSavingContribution() {
 
     return {
         contributions,
+        savings,
         showCreateModal,
         setShowCreateModal,
         showEditModal,

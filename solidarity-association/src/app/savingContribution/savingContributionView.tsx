@@ -16,6 +16,7 @@ export default function SavingContributionView() {
         showEditModal,
         setShowEditModal,
         selectedEdit,
+        savings,
         handleEditClick,
         handleSaveEdit,
         handleCreateContribution,
@@ -93,6 +94,7 @@ export default function SavingContributionView() {
                 show={showCreateModal}
                 onClose={() => setShowCreateModal(false)}
                 onCreate={handleCreateContribution}
+                savings={savings}
             />
             <EditSavingContributionModal
                 show={showEditModal}
