@@ -45,6 +45,7 @@ export default function SavingContributionView() {
                     <thead className="bg-gray-100 text-gray-700 font-medium text-left">
                         <tr>
                             <th className="px-4 py-3 text-center">Id</th>
+                            <th className="px-4 py-3 text-center">Ahorro</th>
                             <th className="px-4 py-3 text-center">Monto</th>
                             <th className="px-4 py-3 text-center">Fecha</th>
                             <th className="px-4 py-3 text-center">Acciones</th>
@@ -58,6 +59,9 @@ export default function SavingContributionView() {
                             >
                                 <td className="px-4 py-3 text-center">
                                     {c.contributionId?.toString().padStart(2, '0')}
+                                </td>
+                                <td className="px-4 py-3 text-center">
+                                    {c.savingId ? savings.find(s => s.savingId === c.savingId)?.name : 'N/A'}
                                 </td>
                                 <td className="px-4 py-3 text-center font-medium">
                                     ₡{c.amount?.toLocaleString('es-CR')}

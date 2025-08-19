@@ -45,6 +45,7 @@ export default function WithdrawalView() {
                     <thead className="bg-gray-100 text-gray-700 font-medium text-left">
                         <tr>
                             <th className="px-4 py-3 text-center">Id</th>
+                            <th className="px-4 py-3 text-center">Ahorro</th>
                             <th className="px-4 py-3 text-center">Monto</th>
                             <th className="px-4 py-3 text-center">Fecha</th>
                             <th className="px-4 py-3 text-center">Acciones</th>
@@ -58,6 +59,9 @@ export default function WithdrawalView() {
                             >
                                 <td className="px-4 py-3 text-center">
                                     {w.withdrawalId?.toString().padStart(2, '0')}
+                                </td>
+                                <td className="px-4 py-3 text-center">
+                                    {w.savingId ? savings.find(s => s.savingId === w.savingId)?.name : 'N/A'}
                                 </td>
                                 <td className="px-4 py-3 text-center">
                                     ₡{w.amount?.toLocaleString('es-CR')}
